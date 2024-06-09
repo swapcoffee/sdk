@@ -7,6 +7,7 @@
 <p align="center">
 <a href="https://www.npmjs.com/package/@swap-coffee/sdk"><img alt="npm" src="https://img.shields.io/npm/v/%40swap-coffee%2Fsdk?labelColor=%23fffff&color=%233e1c00"></a>
 <a href="https://opensource.org/licenses/mit"><img alt="License" src="https://img.shields.io/badge/license-MIT-blue"></a>
+<a href="https://docs.swap.coffee"><img alt="documentation" src="https://img.shields.io/badge/documentation-yes-brightgreen"></a>
 </p>
 
 ## Installation
@@ -15,7 +16,10 @@
 npm install @swap-coffee/sdk
 ```
 
-## Usage
+Documentation can be found [here](https://docs.swap.coffee).
+
+
+## Basic usage
 
 Swapping assets using our SDK and [TonConnect SDK](https://www.npmjs.com/package/@tonconnect/sdk)
 
