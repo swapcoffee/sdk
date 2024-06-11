@@ -1,23 +1,29 @@
-import { ApiTransactionsResult, RoutingApi } from './api';
+import { ApiTransactionResult, RoutingApi } from './api';
 
 
 /**
- * Wait for transaction result by query_id
- * 
- * @param query_id - query_id of transaction from {@link ApiSwapTransaction}
+ * Wait for transaction result by route id
+ *
+ * @param routeId - route id
  * @param api - instance of {@link RoutingApi}
  * @param period - period of time to wait for result (default 1000 ms)
  */
-export async function waitForTransactionResult(query_id: number, api: RoutingApi, period: number = 1000): Promise<ApiTransactionsResult> {
-  let result = await api.getTransactionsResult(query_id);
+export async function waitForTransactionResults(routeId: number, api: RoutingApi, period: number = 10_000): Promise<ApiTransactionResult[]> {
+  let result = await api.getTransactionsResult(routeId);
 
   return new Promise(async (resolve, reject) => {
-    while (result.data.in_progress) {
-      await new Promise(r => setTimeout(r, period));
-      result = await api.getTransactionsResult(query_id);
+
+    while (!allTransactionsCompleted(result.data)) {
+      await new Promise(resolve => setTimeout(resolve, period));
+      result = await api.getTransactionsResult(routeId);
     }
 
     resolve(result.data);
   });
+}
+
+
+function allTransactionsCompleted(transactions: ApiTransactionResult[]): boolean {
+  return transactions.every(transaction => transaction.status != 'pending' && transaction.status != 'partially_complete');
 }
 

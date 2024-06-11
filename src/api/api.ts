@@ -289,7 +289,7 @@ export interface ApiPoolFees {
     'second_token'?: number;
 }
 /**
- * Configures the DEX pools that can appear in the generated route. Set blockchains = [\"ton\"] inside it, you can remove the dexes field, and max_volatility allows you to exclude pools whose volatility has been above a certain percentage in the last 15 minutes. This makes sense when you allow 2-3 intermediate tokens or a large number of splits to smooth out potential issues.
+ * Configures the DEX pools that can appear in the generated route. By setting blockchains = [\"ton\"] inside it, you can remove the dexes field; max_volatility allows you to exclude pools whose volatility has been above a certain percentage in the last 15 minutes. This makes sense when you allow 2-3 intermediate tokens or a large number of splits to smooth out potential issues.
  * @export
  * @interface ApiPoolSelector
  */
@@ -709,6 +709,39 @@ export interface ApiTokenRestrictions {
 /**
  * 
  * @export
+ * @interface ApiTransactionResult
+ */
+export interface ApiTransactionResult {
+    /**
+     * 
+     * @type {ApiTransactionStatus}
+     * @memberof ApiTransactionResult
+     */
+    'status': ApiTransactionStatus;
+    /**
+     * 
+     * @type {Array<ApiTransactionStepResult>}
+     * @memberof ApiTransactionResult
+     */
+    'steps': Array<ApiTransactionStepResult>;
+    /**
+     * 
+     * @type {ApiTransactionResultItem}
+     * @memberof ApiTransactionResult
+     */
+    'input'?: ApiTransactionResultItem;
+    /**
+     * 
+     * @type {ApiTransactionResultItem}
+     * @memberof ApiTransactionResult
+     */
+    'output'?: ApiTransactionResultItem;
+}
+
+
+/**
+ * 
+ * @export
  * @interface ApiTransactionResultItem
  */
 export interface ApiTransactionResultItem {
@@ -731,6 +764,67 @@ export interface ApiTransactionResultItem {
      */
     'amount': number;
 }
+/**
+ * 
+ * @export
+ * @enum {string}
+ */
+
+export const ApiTransactionStatus = {
+    Pending: 'pending',
+    PartiallyComplete: 'partially_complete',
+    Succeeded: 'succeeded',
+    Failed: 'failed',
+    TimedOut: 'timed_out'
+} as const;
+
+export type ApiTransactionStatus = typeof ApiTransactionStatus[keyof typeof ApiTransactionStatus];
+
+
+/**
+ * 
+ * @export
+ * @interface ApiTransactionStepResult
+ */
+export interface ApiTransactionStepResult {
+    /**
+     * 
+     * @type {ApiTransactionStepStatus}
+     * @memberof ApiTransactionStepResult
+     */
+    'status': ApiTransactionStepStatus;
+    /**
+     * 
+     * @type {ApiTransactionResultItem}
+     * @memberof ApiTransactionStepResult
+     */
+    'input'?: ApiTransactionResultItem;
+    /**
+     * 
+     * @type {ApiTransactionResultItem}
+     * @memberof ApiTransactionStepResult
+     */
+    'output'?: ApiTransactionResultItem;
+}
+
+
+/**
+ * 
+ * @export
+ * @enum {string}
+ */
+
+export const ApiTransactionStepStatus = {
+    Pending: 'pending',
+    Cancelled: 'cancelled',
+    Succeeded: 'succeeded',
+    Failed: 'failed',
+    TimedOut: 'timed_out'
+} as const;
+
+export type ApiTransactionStepStatus = typeof ApiTransactionStepStatus[keyof typeof ApiTransactionStepStatus];
+
+
 /**
  * 
  * @export
@@ -765,33 +859,21 @@ export interface ApiTransactionsRequest {
 /**
  * 
  * @export
- * @interface ApiTransactionsResult
+ * @interface ApiTransactionsResponse
  */
-export interface ApiTransactionsResult {
+export interface ApiTransactionsResponse {
+    /**
+     * Unique identifier of the route used for tracking.
+     * @type {number}
+     * @memberof ApiTransactionsResponse
+     */
+    'route_id': number;
     /**
      * 
-     * @type {boolean}
-     * @memberof ApiTransactionsResult
+     * @type {Array<ApiSwapTransaction>}
+     * @memberof ApiTransactionsResponse
      */
-    'in_progress': boolean;
-    /**
-     * 
-     * @type {boolean}
-     * @memberof ApiTransactionsResult
-     */
-    'failed': boolean;
-    /**
-     * 
-     * @type {Array<ApiTransactionResultItem>}
-     * @memberof ApiTransactionsResult
-     */
-    'input': Array<ApiTransactionResultItem>;
-    /**
-     * 
-     * @type {Array<ApiTransactionResultItem>}
-     * @memberof ApiTransactionsResult
-     */
-    'output': Array<ApiTransactionResultItem>;
+    'transactions': Array<ApiSwapTransaction>;
 }
 /**
  * 
@@ -1293,48 +1375,6 @@ export const EntityApiAxiosParamCreator = function (configuration?: Configuratio
             };
         },
         /**
-         * Returns list of liquidity pools supported by the service in the given blockchain and DEX
-         * @param {string} [blockchain] 
-         * @param {string} [dex] 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        getPools: async (blockchain?: string, dex?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            const localVarPath = `/v1/pools`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-            // authentication ApiKey required
-            await setApiKeyToObject(localVarHeaderParameter, "X-Api-Key", configuration)
-
-            if (blockchain !== undefined) {
-                localVarQueryParameter['blockchain'] = blockchain;
-            }
-
-            if (dex !== undefined) {
-                localVarQueryParameter['dex'] = dex;
-            }
-
-
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
          * Returns information about the given token for the given blockchain
          * @param {string} blockchain 
          * @param {string} address 
@@ -1511,19 +1551,6 @@ export const EntityApiFp = function(configuration?: Configuration) {
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
-         * Returns list of liquidity pools supported by the service in the given blockchain and DEX
-         * @param {string} [blockchain] 
-         * @param {string} [dex] 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async getPools(blockchain?: string, dex?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<ApiPool>>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getPools(blockchain, dex, options);
-            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['EntityApi.getPools']?.[localVarOperationServerIndex]?.url;
-            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
-        },
-        /**
          * Returns information about the given token for the given blockchain
          * @param {string} blockchain 
          * @param {string} address 
@@ -1607,16 +1634,6 @@ export const EntityApiFactory = function (configuration?: Configuration, basePat
          */
         getPool(blockchain: string, address: string, options?: any): AxiosPromise<ApiPool> {
             return localVarFp.getPool(blockchain, address, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * Returns list of liquidity pools supported by the service in the given blockchain and DEX
-         * @param {string} [blockchain] 
-         * @param {string} [dex] 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        getPools(blockchain?: string, dex?: string, options?: any): AxiosPromise<Array<ApiPool>> {
-            return localVarFp.getPools(blockchain, dex, options).then((request) => request(axios, basePath));
         },
         /**
          * Returns information about the given token for the given blockchain
@@ -1703,18 +1720,6 @@ export class EntityApi extends BaseAPI {
     }
 
     /**
-     * Returns list of liquidity pools supported by the service in the given blockchain and DEX
-     * @param {string} [blockchain] 
-     * @param {string} [dex] 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof EntityApi
-     */
-    public getPools(blockchain?: string, dex?: string, options?: RawAxiosRequestConfig) {
-        return EntityApiFp(this.configuration).getPools(blockchain, dex, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
      * Returns information about the given token for the given blockchain
      * @param {string} blockchain 
      * @param {string} address 
@@ -1797,9 +1802,10 @@ export const RoutingApiAxiosParamCreator = function (configuration?: Configurati
             };
         },
         /**
-         * Returns pre-built transactions for the given route. It is assumed that transactions are being to be signed and sent by the sender via wallet
+         * Returns pre-built transactions for the given route. It is assumed that transactions will be signed and sent by the sender via wallet
          * @param {ApiTransactionsRequest} apiTransactionsRequest 
          * @param {*} [options] Override http request option.
+         * @deprecated
          * @throws {RequiredError}
          */
         buildTransactions: async (apiTransactionsRequest: ApiTransactionsRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
@@ -1835,8 +1841,46 @@ export const RoutingApiAxiosParamCreator = function (configuration?: Configurati
             };
         },
         /**
-         * Get transactions execution result
-         * @param {number} queryId 
+         * Returns pre-built transactions for the given route. It is assumed that transactions will be signed and sent by the sender via wallet
+         * @param {ApiTransactionsRequest} apiTransactionsRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        buildTransactionsV2: async (apiTransactionsRequest: ApiTransactionsRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'apiTransactionsRequest' is not null or undefined
+            assertParamExists('buildTransactionsV2', 'apiTransactionsRequest', apiTransactionsRequest)
+            const localVarPath = `/v2/route/transactions`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication ApiKey required
+            await setApiKeyToObject(localVarHeaderParameter, "X-Api-Key", configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(apiTransactionsRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Get route transactions execution result
+         * @param {number} queryId Actually it\&#39;s route_id, but saved old naming for back-compatibility
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -1896,9 +1940,10 @@ export const RoutingApiFp = function(configuration?: Configuration) {
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
-         * Returns pre-built transactions for the given route. It is assumed that transactions are being to be signed and sent by the sender via wallet
+         * Returns pre-built transactions for the given route. It is assumed that transactions will be signed and sent by the sender via wallet
          * @param {ApiTransactionsRequest} apiTransactionsRequest 
          * @param {*} [options] Override http request option.
+         * @deprecated
          * @throws {RequiredError}
          */
         async buildTransactions(apiTransactionsRequest: ApiTransactionsRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<ApiSwapTransaction>>> {
@@ -1908,12 +1953,24 @@ export const RoutingApiFp = function(configuration?: Configuration) {
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
-         * Get transactions execution result
-         * @param {number} queryId 
+         * Returns pre-built transactions for the given route. It is assumed that transactions will be signed and sent by the sender via wallet
+         * @param {ApiTransactionsRequest} apiTransactionsRequest 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getTransactionsResult(queryId: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ApiTransactionsResult>> {
+        async buildTransactionsV2(apiTransactionsRequest: ApiTransactionsRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ApiTransactionsResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.buildTransactionsV2(apiTransactionsRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['RoutingApi.buildTransactionsV2']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Get route transactions execution result
+         * @param {number} queryId Actually it\&#39;s route_id, but saved old naming for back-compatibility
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getTransactionsResult(queryId: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<ApiTransactionResult>>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.getTransactionsResult(queryId, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['RoutingApi.getTransactionsResult']?.[localVarOperationServerIndex]?.url;
@@ -1939,21 +1996,31 @@ export const RoutingApiFactory = function (configuration?: Configuration, basePa
             return localVarFp.buildRoute(apiRouteRequest, options).then((request) => request(axios, basePath));
         },
         /**
-         * Returns pre-built transactions for the given route. It is assumed that transactions are being to be signed and sent by the sender via wallet
+         * Returns pre-built transactions for the given route. It is assumed that transactions will be signed and sent by the sender via wallet
          * @param {ApiTransactionsRequest} apiTransactionsRequest 
          * @param {*} [options] Override http request option.
+         * @deprecated
          * @throws {RequiredError}
          */
         buildTransactions(apiTransactionsRequest: ApiTransactionsRequest, options?: any): AxiosPromise<Array<ApiSwapTransaction>> {
             return localVarFp.buildTransactions(apiTransactionsRequest, options).then((request) => request(axios, basePath));
         },
         /**
-         * Get transactions execution result
-         * @param {number} queryId 
+         * Returns pre-built transactions for the given route. It is assumed that transactions will be signed and sent by the sender via wallet
+         * @param {ApiTransactionsRequest} apiTransactionsRequest 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getTransactionsResult(queryId: number, options?: any): AxiosPromise<ApiTransactionsResult> {
+        buildTransactionsV2(apiTransactionsRequest: ApiTransactionsRequest, options?: any): AxiosPromise<ApiTransactionsResponse> {
+            return localVarFp.buildTransactionsV2(apiTransactionsRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Get route transactions execution result
+         * @param {number} queryId Actually it\&#39;s route_id, but saved old naming for back-compatibility
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getTransactionsResult(queryId: number, options?: any): AxiosPromise<Array<ApiTransactionResult>> {
             return localVarFp.getTransactionsResult(queryId, options).then((request) => request(axios, basePath));
         },
     };
@@ -1978,9 +2045,10 @@ export class RoutingApi extends BaseAPI {
     }
 
     /**
-     * Returns pre-built transactions for the given route. It is assumed that transactions are being to be signed and sent by the sender via wallet
+     * Returns pre-built transactions for the given route. It is assumed that transactions will be signed and sent by the sender via wallet
      * @param {ApiTransactionsRequest} apiTransactionsRequest 
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      * @memberof RoutingApi
      */
@@ -1989,8 +2057,19 @@ export class RoutingApi extends BaseAPI {
     }
 
     /**
-     * Get transactions execution result
-     * @param {number} queryId 
+     * Returns pre-built transactions for the given route. It is assumed that transactions will be signed and sent by the sender via wallet
+     * @param {ApiTransactionsRequest} apiTransactionsRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof RoutingApi
+     */
+    public buildTransactionsV2(apiTransactionsRequest: ApiTransactionsRequest, options?: RawAxiosRequestConfig) {
+        return RoutingApiFp(this.configuration).buildTransactionsV2(apiTransactionsRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Get route transactions execution result
+     * @param {number} queryId Actually it\&#39;s route_id, but saved old naming for back-compatibility
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof RoutingApi

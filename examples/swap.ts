@@ -1,6 +1,6 @@
 import { FSStorage, TonConnectStorage } from './storage';
-import { ApiTokenAddress, RoutingApi } from '@swap-coffee/sdk';
 import TonConnect, { WalletInfo, WalletInfoRemote } from '@tonconnect/sdk';
+import { ApiTokenAddress, RoutingApi, waitForTransactionResults } from '../src';
 
 function isRemote(walletInfo: WalletInfo): walletInfo is WalletInfoRemote {
   return 'universalLink' in walletInfo && 'bridgeUrl' in walletInfo;
@@ -54,18 +54,21 @@ export async function swapAssets() {
   const route = await routingApi.buildRoute({
     input_token: assetIn,
     output_token: assetOut,
-    input_amount: input_amount,
+    output_amount: 200, // desired amount of output token
   });
 
-  const transactions = await routingApi.buildTransactions({
+  console.log(route.data);
+
+  const transactions = await routingApi.buildTransactionsV2({
     sender_address: connector.account?.address!!,
     slippage: 0.1,
     paths: route.data.paths, // note: use route.data here
   });
 
+
   let messages = [];
 
-  for (const transaction of transactions.data) {
+  for (const transaction of transactions.data.transactions) {
     messages.push({
       address: transaction.address,
       amount: transaction.value,
@@ -77,6 +80,10 @@ export async function swapAssets() {
     validUntil: Date.now() + 5 * 60 * 1000,
     messages: messages,
   });
+
+  const results = await waitForTransactionResults(transactions.data.route_id, routingApi);
+
+  console.log(results); // array of transaction results
 }
 
 swapAssets();

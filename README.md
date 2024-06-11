@@ -24,53 +24,49 @@ Documentation can be found [here](https://docs.swap.coffee).
 Swapping assets using our SDK and [TonConnect SDK](https://www.npmjs.com/package/@tonconnect/sdk)
 
 ```typescript
-import {ApiTokenAddress, RoutingApi} from "@swap-coffee/sdk";
-import TonConnect, {WalletInfo, WalletInfoRemote} from "@tonconnect/sdk";
-
-const connector = await setupTonConnect()
-const routingApi = new RoutingApi()
+const connector = await setupTonConnect();
+const routingApi = new RoutingApi();
 
 const assetIn: ApiTokenAddress = {
-  blockchain: "ton",
-  address: "native" // stands for TON
-}
+  blockchain: 'ton',
+  address: 'native', // stands for TON
+};
 const assetOut: ApiTokenAddress = {
-  blockchain: "ton",
-  address: "EQCl0S4xvoeGeFGijTzicSA8j6GiiugmJW5zxQbZTUntre-1" // CES
-}
+  blockchain: 'ton',
+  address: 'EQCl0S4xvoeGeFGijTzicSA8j6GiiugmJW5zxQbZTUntre-1', // CES
+};
 
-const input_amount = 5 // 5 TON
+const input_amount = 5; // 5 TON
 
-// let's build an optimal route
 const route = await routingApi.buildRoute({
   input_token: assetIn,
   output_token: assetOut,
-  input_amount: input_amount,
-})
+  output_amount: 200, // desired amount of output token
+});
 
-// then we can build transactions payload
-const transactions = await routingApi.buildTransactions({
-  sender_address: connector.account?.address!!, // address of user's wallet
-  slippage: 0.1, // 10% slippage
+const transactions = await routingApi.buildTransactionsV2({
+  sender_address: connector.account?.address!!,
+  slippage: 0.1,
   paths: route.data.paths, // note: use route.data here
-})
+});
 
-let messages = []
 
-for (const transaction of transactions.data) {
-  // swap.coffee takes care of all the boring stuff here :)
+let messages = [];
+
+for (const transaction of transactions.data.transactions) {
   messages.push({
     address: transaction.address,
     amount: transaction.value,
     payload: transaction.cell,
-  })
+  });
 }
 
-// just send the transaction to the user
 await connector.sendTransaction({
   validUntil: Date.now() + 5 * 60 * 1000,
   messages: messages,
-})
+});
+
+const results = await waitForTransactionResults(transactions.data.route_id, routingApi);
 ```
 And here is our transaction:
 
