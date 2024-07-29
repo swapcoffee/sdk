@@ -103,6 +103,179 @@ export interface ApiBlockchain {
 /**
  * 
  * @export
+ * @interface ApiClaimStats
+ */
+export interface ApiClaimStats {
+    /**
+     * 
+     * @type {ApiClaimType}
+     * @memberof ApiClaimStats
+     */
+    'type': ApiClaimType;
+    /**
+     * 
+     * @type {number}
+     * @memberof ApiClaimStats
+     */
+    'claimed': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof ApiClaimStats
+     */
+    'available': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof ApiClaimStats
+     */
+    'locked': number;
+}
+
+
+/**
+ * 
+ * @export
+ * @interface ApiClaimStatus
+ */
+export interface ApiClaimStatus {
+    /**
+     * 
+     * @type {ApiClaimType}
+     * @memberof ApiClaimStatus
+     */
+    'type': ApiClaimType;
+    /**
+     * 
+     * @type {number}
+     * @memberof ApiClaimStatus
+     */
+    'query_id': number;
+    /**
+     * When transaction happened in blockchain - unix seconds
+     * @type {number}
+     * @memberof ApiClaimStatus
+     */
+    'unix_time': number;
+    /**
+     * When transaction happened in blockchain - on-chain logical time
+     * @type {number}
+     * @memberof ApiClaimStatus
+     */
+    'logical_time': number;
+    /**
+     * 
+     * @type {string}
+     * @memberof ApiClaimStatus
+     */
+    'transaction_hash': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ApiClaimStatus
+     */
+    'token_address': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ApiClaimStatus
+     */
+    'wallet_address': string;
+    /**
+     * 
+     * @type {number}
+     * @memberof ApiClaimStatus
+     */
+    'amount': number;
+    /**
+     * 
+     * @type {ApiWithdrawal}
+     * @memberof ApiClaimStatus
+     */
+    'withdrawal': ApiWithdrawal;
+}
+
+
+/**
+ * 
+ * @export
+ * @interface ApiClaimStatusResponse
+ */
+export interface ApiClaimStatusResponse {
+    /**
+     * 
+     * @type {number}
+     * @memberof ApiClaimStatusResponse
+     */
+    'total_count': number;
+    /**
+     * 
+     * @type {Array<ApiClaimStatus>}
+     * @memberof ApiClaimStatusResponse
+     */
+    'items': Array<ApiClaimStatus>;
+}
+/**
+ * 
+ * @export
+ * @interface ApiClaimTokenStats
+ */
+export interface ApiClaimTokenStats {
+    /**
+     * 
+     * @type {string}
+     * @memberof ApiClaimTokenStats
+     */
+    'token_address': string;
+    /**
+     * Address of a wallet where token resides
+     * @type {string}
+     * @memberof ApiClaimTokenStats
+     */
+    'wallet_address': string;
+    /**
+     * 
+     * @type {ApiClaimStats}
+     * @memberof ApiClaimTokenStats
+     */
+    'stats': ApiClaimStats;
+}
+/**
+ * 
+ * @export
+ * @interface ApiClaimTokenStatsResponse
+ */
+export interface ApiClaimTokenStatsResponse {
+    /**
+     * 
+     * @type {number}
+     * @memberof ApiClaimTokenStatsResponse
+     */
+    'total_count': number;
+    /**
+     * 
+     * @type {Array<ApiClaimTokenStats>}
+     * @memberof ApiClaimTokenStatsResponse
+     */
+    'items': Array<ApiClaimTokenStats>;
+}
+/**
+ * 
+ * @export
+ * @enum {string}
+ */
+
+export const ApiClaimType = {
+    All: 'all',
+    Referral: 'referral'
+} as const;
+
+export type ApiClaimType = typeof ApiClaimType[keyof typeof ApiClaimType];
+
+
+/**
+ * 
+ * @export
  * @interface ApiCreateAuthTokenRequest
  */
 export interface ApiCreateAuthTokenRequest {
@@ -191,6 +364,49 @@ export interface ApiError {
 /**
  * 
  * @export
+ * @interface ApiHistoricalTransaction
+ */
+export interface ApiHistoricalTransaction {
+    /**
+     * 
+     * @type {number}
+     * @memberof ApiHistoricalTransaction
+     */
+    'route_id': number;
+    /**
+     * When transaction happened in blockchain - unix seconds
+     * @type {number}
+     * @memberof ApiHistoricalTransaction
+     */
+    'unix_time': number;
+    /**
+     * When transaction happened in blockchain - on-chain logical time
+     * @type {number}
+     * @memberof ApiHistoricalTransaction
+     */
+    'logical_time': number;
+    /**
+     * 
+     * @type {ApiQuantifiedToken}
+     * @memberof ApiHistoricalTransaction
+     */
+    'from': ApiQuantifiedToken;
+    /**
+     * 
+     * @type {ApiQuantifiedToken}
+     * @memberof ApiHistoricalTransaction
+     */
+    'to': ApiQuantifiedToken;
+    /**
+     * 
+     * @type {string}
+     * @memberof ApiHistoricalTransaction
+     */
+    'dex': string;
+}
+/**
+ * 
+ * @export
  * @interface ApiPool
  */
 export interface ApiPool {
@@ -206,6 +422,12 @@ export interface ApiPool {
      * @memberof ApiPool
      */
     'address': string;
+    /**
+     * 
+     * @type {ApiPoolType}
+     * @memberof ApiPool
+     */
+    'type': ApiPoolType;
     /**
      * 
      * @type {ApiAmmType}
@@ -316,6 +538,72 @@ export interface ApiPoolSelector {
 /**
  * 
  * @export
+ * @enum {string}
+ */
+
+export const ApiPoolType = {
+    Public: 'public',
+    Private: 'private',
+    Slumbering: 'slumbering',
+    Invalid: 'invalid'
+} as const;
+
+export type ApiPoolType = typeof ApiPoolType[keyof typeof ApiPoolType];
+
+
+/**
+ * 
+ * @export
+ * @interface ApiProofValidationRequest
+ */
+export interface ApiProofValidationRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof ApiProofValidationRequest
+     */
+    'public_key': string;
+    /**
+     * Base64-encoded initial state. Must be retrieved from ton-connect.
+     * @type {string}
+     * @memberof ApiProofValidationRequest
+     */
+    'wallet_state_init': string;
+    /**
+     * 
+     * @type {ApiTonProof}
+     * @memberof ApiProofValidationRequest
+     */
+    'proof': ApiTonProof;
+}
+/**
+ * 
+ * @export
+ * @interface ApiQuantifiedToken
+ */
+export interface ApiQuantifiedToken {
+    /**
+     * 
+     * @type {string}
+     * @memberof ApiQuantifiedToken
+     */
+    'token_blockchain': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ApiQuantifiedToken
+     */
+    'token_address': string;
+    /**
+     * 
+     * @type {number}
+     * @memberof ApiQuantifiedToken
+     */
+    'amount': number;
+}
+/**
+ * 
+ * @export
  * @interface ApiRecommendedGas
  */
 export interface ApiRecommendedGas {
@@ -331,6 +619,112 @@ export interface ApiRecommendedGas {
      * @memberof ApiRecommendedGas
      */
     'amount': number;
+}
+/**
+ * 
+ * @export
+ * @interface ApiReferralAccountInfo
+ */
+export interface ApiReferralAccountInfo {
+    /**
+     * 
+     * @type {string}
+     * @memberof ApiReferralAccountInfo
+     */
+    'link': string;
+    /**
+     * 
+     * @type {number}
+     * @memberof ApiReferralAccountInfo
+     */
+    'level': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof ApiReferralAccountInfo
+     */
+    'fees_percentage': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof ApiReferralAccountInfo
+     */
+    'referrals_count': number;
+    /**
+     * Number of transactions sent by referral users
+     * @type {number}
+     * @memberof ApiReferralAccountInfo
+     */
+    'transactions_count': number;
+    /**
+     * 
+     * @type {ApiReferralAccountRewards}
+     * @memberof ApiReferralAccountInfo
+     */
+    'rewards': ApiReferralAccountRewards;
+}
+/**
+ * 
+ * @export
+ * @interface ApiReferralAccountReward
+ */
+export interface ApiReferralAccountReward {
+    /**
+     * 
+     * @type {number}
+     * @memberof ApiReferralAccountReward
+     */
+    'volume': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof ApiReferralAccountReward
+     */
+    'fees': number;
+}
+/**
+ * 
+ * @export
+ * @interface ApiReferralAccountRewards
+ */
+export interface ApiReferralAccountRewards {
+    /**
+     * 
+     * @type {ApiReferralAccountReward}
+     * @memberof ApiReferralAccountRewards
+     */
+    'monthly': ApiReferralAccountReward;
+    /**
+     * 
+     * @type {ApiReferralAccountReward}
+     * @memberof ApiReferralAccountRewards
+     */
+    'total': ApiReferralAccountReward;
+}
+/**
+ * 
+ * @export
+ * @interface ApiReferralInfo
+ */
+export interface ApiReferralInfo {
+    /**
+     * 
+     * @type {string}
+     * @memberof ApiReferralInfo
+     */
+    'address': string;
+    /**
+     * 
+     * @type {number}
+     * @memberof ApiReferralInfo
+     */
+    'transactions_count': number;
+    /**
+     * 
+     * @type {ApiReferralAccountReward}
+     * @memberof ApiReferralInfo
+     */
+    'rewards': ApiReferralAccountReward;
 }
 /**
  * 
@@ -600,7 +994,7 @@ export interface ApiSwapTransaction {
      */
     'cell': string;
     /**
-     * Internal message send mode. More here https://docs.ton.org/develop/smart-contracts/messages#message-modes
+     * Internal message send mode. More: https://docs.ton.org/develop/smart-contracts/messages#message-modes
      * @type {number}
      * @memberof ApiSwapTransaction
      */
@@ -649,6 +1043,31 @@ export interface ApiTokenAddress {
      * @memberof ApiTokenAddress
      */
     'address': string;
+}
+/**
+ * 
+ * @export
+ * @interface ApiTokenClaimRequest
+ */
+export interface ApiTokenClaimRequest {
+    /**
+     * 
+     * @type {number}
+     * @memberof ApiTokenClaimRequest
+     */
+    'amount': number;
+    /**
+     * 
+     * @type {string}
+     * @memberof ApiTokenClaimRequest
+     */
+    'token_address': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ApiTokenClaimRequest
+     */
+    'wallet_address'?: string;
 }
 /**
  * 
@@ -709,6 +1128,99 @@ export interface ApiTokenRestrictions {
 /**
  * 
  * @export
+ * @interface ApiTonProof
+ */
+export interface ApiTonProof {
+    /**
+     * Valid till, in seconds
+     * @type {number}
+     * @memberof ApiTonProof
+     */
+    'timestamp': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof ApiTonProof
+     */
+    'domain_len': number;
+    /**
+     * 
+     * @type {string}
+     * @memberof ApiTonProof
+     */
+    'domain_val': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ApiTonProof
+     */
+    'payload': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ApiTonProof
+     */
+    'signature': string;
+}
+/**
+ * 
+ * @export
+ * @interface ApiTonStakingTransactionRequest
+ */
+export interface ApiTonStakingTransactionRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof ApiTonStakingTransactionRequest
+     */
+    'referral_name'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ApiTonStakingTransactionRequest
+     */
+    'sender_address': string;
+    /**
+     * 
+     * @type {number}
+     * @memberof ApiTonStakingTransactionRequest
+     */
+    'amount': number;
+    /**
+     * 
+     * @type {string}
+     * @memberof ApiTonStakingTransactionRequest
+     */
+    'token_address': string;
+}
+/**
+ * 
+ * @export
+ * @interface ApiTransactionBoc
+ */
+export interface ApiTransactionBoc {
+    /**
+     * Base64-encoded cell. Treated as a payload field in TonConnect transaction.
+     * @type {string}
+     * @memberof ApiTransactionBoc
+     */
+    'payload_cell': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ApiTransactionBoc
+     */
+    'address': string;
+    /**
+     * Amount of nanotons to be sent. Can be passed to TonConnect transaction.
+     * @type {string}
+     * @memberof ApiTransactionBoc
+     */
+    'value': string;
+}
+/**
+ * 
+ * @export
  * @interface ApiTransactionResult
  */
 export interface ApiTransactionResult {
@@ -726,44 +1238,19 @@ export interface ApiTransactionResult {
     'steps': Array<ApiTransactionStepResult>;
     /**
      * 
-     * @type {ApiTransactionResultItem}
+     * @type {ApiQuantifiedToken}
      * @memberof ApiTransactionResult
      */
-    'input'?: ApiTransactionResultItem;
+    'input'?: ApiQuantifiedToken;
     /**
      * 
-     * @type {ApiTransactionResultItem}
+     * @type {ApiQuantifiedToken}
      * @memberof ApiTransactionResult
      */
-    'output'?: ApiTransactionResultItem;
+    'output'?: ApiQuantifiedToken;
 }
 
 
-/**
- * 
- * @export
- * @interface ApiTransactionResultItem
- */
-export interface ApiTransactionResultItem {
-    /**
-     * 
-     * @type {string}
-     * @memberof ApiTransactionResultItem
-     */
-    'token_blockchain': string;
-    /**
-     * 
-     * @type {string}
-     * @memberof ApiTransactionResultItem
-     */
-    'token_address': string;
-    /**
-     * 
-     * @type {number}
-     * @memberof ApiTransactionResultItem
-     */
-    'amount': number;
-}
 /**
  * 
  * @export
@@ -795,16 +1282,16 @@ export interface ApiTransactionStepResult {
     'status': ApiTransactionStepStatus;
     /**
      * 
-     * @type {ApiTransactionResultItem}
+     * @type {ApiQuantifiedToken}
      * @memberof ApiTransactionStepResult
      */
-    'input'?: ApiTransactionResultItem;
+    'input'?: ApiQuantifiedToken;
     /**
      * 
-     * @type {ApiTransactionResultItem}
+     * @type {ApiQuantifiedToken}
      * @memberof ApiTransactionStepResult
      */
-    'output'?: ApiTransactionResultItem;
+    'output'?: ApiQuantifiedToken;
 }
 
 
@@ -875,6 +1362,56 @@ export interface ApiTransactionsResponse {
      */
     'transactions': Array<ApiSwapTransaction>;
 }
+/**
+ * 
+ * @export
+ * @interface ApiWithdrawal
+ */
+export interface ApiWithdrawal {
+    /**
+     * 
+     * @type {ApiWithdrawalType}
+     * @memberof ApiWithdrawal
+     */
+    'type': ApiWithdrawalType;
+    /**
+     * 
+     * @type {ApiWithdrawalStatus}
+     * @memberof ApiWithdrawal
+     */
+    'status': ApiWithdrawalStatus;
+}
+
+
+/**
+ * 
+ * @export
+ * @enum {string}
+ */
+
+export const ApiWithdrawalStatus = {
+    Unhandled: 'unhandled',
+    Processing: 'processing',
+    Processed: 'processed'
+} as const;
+
+export type ApiWithdrawalStatus = typeof ApiWithdrawalStatus[keyof typeof ApiWithdrawalStatus];
+
+
+/**
+ * 
+ * @export
+ * @enum {string}
+ */
+
+export const ApiWithdrawalType = {
+    Repay: 'repay',
+    Refund: 'refund'
+} as const;
+
+export type ApiWithdrawalType = typeof ApiWithdrawalType[keyof typeof ApiWithdrawalType];
+
+
 /**
  * 
  * @export
@@ -1214,6 +1751,454 @@ export class AuthApi extends BaseAPI {
      */
     public getAuthTokens(options?: RawAxiosRequestConfig) {
         return AuthApiFp(this.configuration).getAuthTokens(options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+
+/**
+ * ClaimApi - axios parameter creator
+ * @export
+ */
+export const ClaimApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @summary Claim tokens
+         * @param {string} address 
+         * @param {ApiClaimType} type 
+         * @param {string} xVerify TON proof for the given address
+         * @param {Array<ApiTokenClaimRequest>} apiTokenClaimRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        claimTokens: async (address: string, type: ApiClaimType, xVerify: string, apiTokenClaimRequest: Array<ApiTokenClaimRequest>, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'address' is not null or undefined
+            assertParamExists('claimTokens', 'address', address)
+            // verify required parameter 'type' is not null or undefined
+            assertParamExists('claimTokens', 'type', type)
+            // verify required parameter 'xVerify' is not null or undefined
+            assertParamExists('claimTokens', 'xVerify', xVerify)
+            // verify required parameter 'apiTokenClaimRequest' is not null or undefined
+            assertParamExists('claimTokens', 'apiTokenClaimRequest', apiTokenClaimRequest)
+            const localVarPath = `/v1/claim/{address}`
+                .replace(`{${"address"}}`, encodeURIComponent(String(address)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication ApiKey required
+            await setApiKeyToObject(localVarHeaderParameter, "X-Api-Key", configuration)
+
+            if (type !== undefined) {
+                localVarQueryParameter['type'] = type;
+            }
+
+            if (xVerify != null) {
+                localVarHeaderParameter['x-verify'] = String(xVerify);
+            }
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(apiTokenClaimRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Get account\'s aggregated claiming stats
+         * @param {string} address 
+         * @param {ApiClaimType} type 
+         * @param {string} xVerify TON proof for the given address
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getClaimStatsAggregated: async (address: string, type: ApiClaimType, xVerify: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'address' is not null or undefined
+            assertParamExists('getClaimStatsAggregated', 'address', address)
+            // verify required parameter 'type' is not null or undefined
+            assertParamExists('getClaimStatsAggregated', 'type', type)
+            // verify required parameter 'xVerify' is not null or undefined
+            assertParamExists('getClaimStatsAggregated', 'xVerify', xVerify)
+            const localVarPath = `/v1/claim/{address}`
+                .replace(`{${"address"}}`, encodeURIComponent(String(address)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication ApiKey required
+            await setApiKeyToObject(localVarHeaderParameter, "X-Api-Key", configuration)
+
+            if (type !== undefined) {
+                localVarQueryParameter['type'] = type;
+            }
+
+            if (xVerify != null) {
+                localVarHeaderParameter['x-verify'] = String(xVerify);
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Get account\'s claiming stats per token
+         * @param {string} address 
+         * @param {ApiClaimType} type 
+         * @param {string} xVerify TON proof for the given address
+         * @param {number} [offset] 
+         * @param {number} [limit] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getClaimStatsPerToken: async (address: string, type: ApiClaimType, xVerify: string, offset?: number, limit?: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'address' is not null or undefined
+            assertParamExists('getClaimStatsPerToken', 'address', address)
+            // verify required parameter 'type' is not null or undefined
+            assertParamExists('getClaimStatsPerToken', 'type', type)
+            // verify required parameter 'xVerify' is not null or undefined
+            assertParamExists('getClaimStatsPerToken', 'xVerify', xVerify)
+            const localVarPath = `/v1/claim/{address}/tokens`
+                .replace(`{${"address"}}`, encodeURIComponent(String(address)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication ApiKey required
+            await setApiKeyToObject(localVarHeaderParameter, "X-Api-Key", configuration)
+
+            if (type !== undefined) {
+                localVarQueryParameter['type'] = type;
+            }
+
+            if (offset !== undefined) {
+                localVarQueryParameter['offset'] = offset;
+            }
+
+            if (limit !== undefined) {
+                localVarQueryParameter['limit'] = limit;
+            }
+
+            if (xVerify != null) {
+                localVarHeaderParameter['x-verify'] = String(xVerify);
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Get status of account claimings
+         * @param {string} address 
+         * @param {ApiClaimType} type 
+         * @param {string} xVerify TON proof for the given address
+         * @param {number} [offset] 
+         * @param {number} [limit] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getClaimStatus: async (address: string, type: ApiClaimType, xVerify: string, offset?: number, limit?: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'address' is not null or undefined
+            assertParamExists('getClaimStatus', 'address', address)
+            // verify required parameter 'type' is not null or undefined
+            assertParamExists('getClaimStatus', 'type', type)
+            // verify required parameter 'xVerify' is not null or undefined
+            assertParamExists('getClaimStatus', 'xVerify', xVerify)
+            const localVarPath = `/v1/claim/{address}/status`
+                .replace(`{${"address"}}`, encodeURIComponent(String(address)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication ApiKey required
+            await setApiKeyToObject(localVarHeaderParameter, "X-Api-Key", configuration)
+
+            if (type !== undefined) {
+                localVarQueryParameter['type'] = type;
+            }
+
+            if (offset !== undefined) {
+                localVarQueryParameter['offset'] = offset;
+            }
+
+            if (limit !== undefined) {
+                localVarQueryParameter['limit'] = limit;
+            }
+
+            if (xVerify != null) {
+                localVarHeaderParameter['x-verify'] = String(xVerify);
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * ClaimApi - functional programming interface
+ * @export
+ */
+export const ClaimApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = ClaimApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @summary Claim tokens
+         * @param {string} address 
+         * @param {ApiClaimType} type 
+         * @param {string} xVerify TON proof for the given address
+         * @param {Array<ApiTokenClaimRequest>} apiTokenClaimRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async claimTokens(address: string, type: ApiClaimType, xVerify: string, apiTokenClaimRequest: Array<ApiTokenClaimRequest>, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<ApiTransactionBoc>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.claimTokens(address, type, xVerify, apiTokenClaimRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ClaimApi.claimTokens']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary Get account\'s aggregated claiming stats
+         * @param {string} address 
+         * @param {ApiClaimType} type 
+         * @param {string} xVerify TON proof for the given address
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getClaimStatsAggregated(address: string, type: ApiClaimType, xVerify: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<ApiClaimStats>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getClaimStatsAggregated(address, type, xVerify, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ClaimApi.getClaimStatsAggregated']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary Get account\'s claiming stats per token
+         * @param {string} address 
+         * @param {ApiClaimType} type 
+         * @param {string} xVerify TON proof for the given address
+         * @param {number} [offset] 
+         * @param {number} [limit] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getClaimStatsPerToken(address: string, type: ApiClaimType, xVerify: string, offset?: number, limit?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ApiClaimTokenStatsResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getClaimStatsPerToken(address, type, xVerify, offset, limit, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ClaimApi.getClaimStatsPerToken']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary Get status of account claimings
+         * @param {string} address 
+         * @param {ApiClaimType} type 
+         * @param {string} xVerify TON proof for the given address
+         * @param {number} [offset] 
+         * @param {number} [limit] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getClaimStatus(address: string, type: ApiClaimType, xVerify: string, offset?: number, limit?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ApiClaimStatusResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getClaimStatus(address, type, xVerify, offset, limit, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ClaimApi.getClaimStatus']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+    }
+};
+
+/**
+ * ClaimApi - factory interface
+ * @export
+ */
+export const ClaimApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = ClaimApiFp(configuration)
+    return {
+        /**
+         * 
+         * @summary Claim tokens
+         * @param {string} address 
+         * @param {ApiClaimType} type 
+         * @param {string} xVerify TON proof for the given address
+         * @param {Array<ApiTokenClaimRequest>} apiTokenClaimRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        claimTokens(address: string, type: ApiClaimType, xVerify: string, apiTokenClaimRequest: Array<ApiTokenClaimRequest>, options?: any): AxiosPromise<Array<ApiTransactionBoc>> {
+            return localVarFp.claimTokens(address, type, xVerify, apiTokenClaimRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Get account\'s aggregated claiming stats
+         * @param {string} address 
+         * @param {ApiClaimType} type 
+         * @param {string} xVerify TON proof for the given address
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getClaimStatsAggregated(address: string, type: ApiClaimType, xVerify: string, options?: any): AxiosPromise<Array<ApiClaimStats>> {
+            return localVarFp.getClaimStatsAggregated(address, type, xVerify, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Get account\'s claiming stats per token
+         * @param {string} address 
+         * @param {ApiClaimType} type 
+         * @param {string} xVerify TON proof for the given address
+         * @param {number} [offset] 
+         * @param {number} [limit] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getClaimStatsPerToken(address: string, type: ApiClaimType, xVerify: string, offset?: number, limit?: number, options?: any): AxiosPromise<ApiClaimTokenStatsResponse> {
+            return localVarFp.getClaimStatsPerToken(address, type, xVerify, offset, limit, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Get status of account claimings
+         * @param {string} address 
+         * @param {ApiClaimType} type 
+         * @param {string} xVerify TON proof for the given address
+         * @param {number} [offset] 
+         * @param {number} [limit] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getClaimStatus(address: string, type: ApiClaimType, xVerify: string, offset?: number, limit?: number, options?: any): AxiosPromise<ApiClaimStatusResponse> {
+            return localVarFp.getClaimStatus(address, type, xVerify, offset, limit, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * ClaimApi - object-oriented interface
+ * @export
+ * @class ClaimApi
+ * @extends {BaseAPI}
+ */
+export class ClaimApi extends BaseAPI {
+    /**
+     * 
+     * @summary Claim tokens
+     * @param {string} address 
+     * @param {ApiClaimType} type 
+     * @param {string} xVerify TON proof for the given address
+     * @param {Array<ApiTokenClaimRequest>} apiTokenClaimRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ClaimApi
+     */
+    public claimTokens(address: string, type: ApiClaimType, xVerify: string, apiTokenClaimRequest: Array<ApiTokenClaimRequest>, options?: RawAxiosRequestConfig) {
+        return ClaimApiFp(this.configuration).claimTokens(address, type, xVerify, apiTokenClaimRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Get account\'s aggregated claiming stats
+     * @param {string} address 
+     * @param {ApiClaimType} type 
+     * @param {string} xVerify TON proof for the given address
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ClaimApi
+     */
+    public getClaimStatsAggregated(address: string, type: ApiClaimType, xVerify: string, options?: RawAxiosRequestConfig) {
+        return ClaimApiFp(this.configuration).getClaimStatsAggregated(address, type, xVerify, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Get account\'s claiming stats per token
+     * @param {string} address 
+     * @param {ApiClaimType} type 
+     * @param {string} xVerify TON proof for the given address
+     * @param {number} [offset] 
+     * @param {number} [limit] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ClaimApi
+     */
+    public getClaimStatsPerToken(address: string, type: ApiClaimType, xVerify: string, offset?: number, limit?: number, options?: RawAxiosRequestConfig) {
+        return ClaimApiFp(this.configuration).getClaimStatsPerToken(address, type, xVerify, offset, limit, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Get status of account claimings
+     * @param {string} address 
+     * @param {ApiClaimType} type 
+     * @param {string} xVerify TON proof for the given address
+     * @param {number} [offset] 
+     * @param {number} [limit] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ClaimApi
+     */
+    public getClaimStatus(address: string, type: ApiClaimType, xVerify: string, offset?: number, limit?: number, options?: RawAxiosRequestConfig) {
+        return ClaimApiFp(this.configuration).getClaimStatus(address, type, xVerify, offset, limit, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
@@ -1758,6 +2743,780 @@ export class EntityApi extends BaseAPI {
 
 
 /**
+ * ProfileApi - axios parameter creator
+ * @export
+ */
+export const ProfileApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * Get account settings
+         * @param {string} address 
+         * @param {string} xVerify 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getAccountSettings: async (address: string, xVerify: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'address' is not null or undefined
+            assertParamExists('getAccountSettings', 'address', address)
+            // verify required parameter 'xVerify' is not null or undefined
+            assertParamExists('getAccountSettings', 'xVerify', xVerify)
+            const localVarPath = `/v1/profile/{address}/settings`
+                .replace(`{${"address"}}`, encodeURIComponent(String(address)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication ApiKey required
+            await setApiKeyToObject(localVarHeaderParameter, "X-Api-Key", configuration)
+
+            if (xVerify != null) {
+                localVarHeaderParameter['x_verify'] = String(xVerify);
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Get historical account transactions on swap.coffee
+         * @param {string} address 
+         * @param {string} xVerify TON proof for the given address
+         * @param {string} [token] If set, only transactions related to this token will be returned
+         * @param {string} [token2] If set, only transactions related to this token pair will be returned
+         * @param {number} [size] 
+         * @param {number} [page] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getHistoricalTransactions: async (address: string, xVerify: string, token?: string, token2?: string, size?: number, page?: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'address' is not null or undefined
+            assertParamExists('getHistoricalTransactions', 'address', address)
+            // verify required parameter 'xVerify' is not null or undefined
+            assertParamExists('getHistoricalTransactions', 'xVerify', xVerify)
+            const localVarPath = `/v1/profile/{address}/transactions`
+                .replace(`{${"address"}}`, encodeURIComponent(String(address)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication ApiKey required
+            await setApiKeyToObject(localVarHeaderParameter, "X-Api-Key", configuration)
+
+            if (token !== undefined) {
+                localVarQueryParameter['token'] = token;
+            }
+
+            if (token2 !== undefined) {
+                localVarQueryParameter['token2'] = token2;
+            }
+
+            if (size !== undefined) {
+                localVarQueryParameter['size'] = size;
+            }
+
+            if (page !== undefined) {
+                localVarQueryParameter['page'] = page;
+            }
+
+            if (xVerify != null) {
+                localVarHeaderParameter['x-verify'] = String(xVerify);
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Update account settings
+         * @param {string} address 
+         * @param {string} xVerify 
+         * @param {{ [key: string]: any; }} requestBody 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        updateAccountSettings: async (address: string, xVerify: string, requestBody: { [key: string]: any; }, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'address' is not null or undefined
+            assertParamExists('updateAccountSettings', 'address', address)
+            // verify required parameter 'xVerify' is not null or undefined
+            assertParamExists('updateAccountSettings', 'xVerify', xVerify)
+            // verify required parameter 'requestBody' is not null or undefined
+            assertParamExists('updateAccountSettings', 'requestBody', requestBody)
+            const localVarPath = `/v1/profile/{address}/settings`
+                .replace(`{${"address"}}`, encodeURIComponent(String(address)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication ApiKey required
+            await setApiKeyToObject(localVarHeaderParameter, "X-Api-Key", configuration)
+
+            if (xVerify != null) {
+                localVarHeaderParameter['x_verify'] = String(xVerify);
+            }
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(requestBody, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Validate TON proof for given account address
+         * @param {string} address 
+         * @param {ApiProofValidationRequest} apiProofValidationRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        validateProof: async (address: string, apiProofValidationRequest: ApiProofValidationRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'address' is not null or undefined
+            assertParamExists('validateProof', 'address', address)
+            // verify required parameter 'apiProofValidationRequest' is not null or undefined
+            assertParamExists('validateProof', 'apiProofValidationRequest', apiProofValidationRequest)
+            const localVarPath = `/v1/profile/{address}/proof`
+                .replace(`{${"address"}}`, encodeURIComponent(String(address)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication ApiKey required
+            await setApiKeyToObject(localVarHeaderParameter, "X-Api-Key", configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(apiProofValidationRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * ProfileApi - functional programming interface
+ * @export
+ */
+export const ProfileApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = ProfileApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * Get account settings
+         * @param {string} address 
+         * @param {string} xVerify 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getAccountSettings(address: string, xVerify: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<{ [key: string]: any; }>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getAccountSettings(address, xVerify, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ProfileApi.getAccountSettings']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Get historical account transactions on swap.coffee
+         * @param {string} address 
+         * @param {string} xVerify TON proof for the given address
+         * @param {string} [token] If set, only transactions related to this token will be returned
+         * @param {string} [token2] If set, only transactions related to this token pair will be returned
+         * @param {number} [size] 
+         * @param {number} [page] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getHistoricalTransactions(address: string, xVerify: string, token?: string, token2?: string, size?: number, page?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<ApiHistoricalTransaction>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getHistoricalTransactions(address, xVerify, token, token2, size, page, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ProfileApi.getHistoricalTransactions']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Update account settings
+         * @param {string} address 
+         * @param {string} xVerify 
+         * @param {{ [key: string]: any; }} requestBody 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async updateAccountSettings(address: string, xVerify: string, requestBody: { [key: string]: any; }, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.updateAccountSettings(address, xVerify, requestBody, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ProfileApi.updateAccountSettings']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Validate TON proof for given account address
+         * @param {string} address 
+         * @param {ApiProofValidationRequest} apiProofValidationRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async validateProof(address: string, apiProofValidationRequest: ApiProofValidationRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.validateProof(address, apiProofValidationRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ProfileApi.validateProof']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+    }
+};
+
+/**
+ * ProfileApi - factory interface
+ * @export
+ */
+export const ProfileApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = ProfileApiFp(configuration)
+    return {
+        /**
+         * Get account settings
+         * @param {string} address 
+         * @param {string} xVerify 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getAccountSettings(address: string, xVerify: string, options?: any): AxiosPromise<{ [key: string]: any; }> {
+            return localVarFp.getAccountSettings(address, xVerify, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Get historical account transactions on swap.coffee
+         * @param {string} address 
+         * @param {string} xVerify TON proof for the given address
+         * @param {string} [token] If set, only transactions related to this token will be returned
+         * @param {string} [token2] If set, only transactions related to this token pair will be returned
+         * @param {number} [size] 
+         * @param {number} [page] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getHistoricalTransactions(address: string, xVerify: string, token?: string, token2?: string, size?: number, page?: number, options?: any): AxiosPromise<Array<ApiHistoricalTransaction>> {
+            return localVarFp.getHistoricalTransactions(address, xVerify, token, token2, size, page, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Update account settings
+         * @param {string} address 
+         * @param {string} xVerify 
+         * @param {{ [key: string]: any; }} requestBody 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        updateAccountSettings(address: string, xVerify: string, requestBody: { [key: string]: any; }, options?: any): AxiosPromise<void> {
+            return localVarFp.updateAccountSettings(address, xVerify, requestBody, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Validate TON proof for given account address
+         * @param {string} address 
+         * @param {ApiProofValidationRequest} apiProofValidationRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        validateProof(address: string, apiProofValidationRequest: ApiProofValidationRequest, options?: any): AxiosPromise<void> {
+            return localVarFp.validateProof(address, apiProofValidationRequest, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * ProfileApi - object-oriented interface
+ * @export
+ * @class ProfileApi
+ * @extends {BaseAPI}
+ */
+export class ProfileApi extends BaseAPI {
+    /**
+     * Get account settings
+     * @param {string} address 
+     * @param {string} xVerify 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ProfileApi
+     */
+    public getAccountSettings(address: string, xVerify: string, options?: RawAxiosRequestConfig) {
+        return ProfileApiFp(this.configuration).getAccountSettings(address, xVerify, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Get historical account transactions on swap.coffee
+     * @param {string} address 
+     * @param {string} xVerify TON proof for the given address
+     * @param {string} [token] If set, only transactions related to this token will be returned
+     * @param {string} [token2] If set, only transactions related to this token pair will be returned
+     * @param {number} [size] 
+     * @param {number} [page] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ProfileApi
+     */
+    public getHistoricalTransactions(address: string, xVerify: string, token?: string, token2?: string, size?: number, page?: number, options?: RawAxiosRequestConfig) {
+        return ProfileApiFp(this.configuration).getHistoricalTransactions(address, xVerify, token, token2, size, page, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Update account settings
+     * @param {string} address 
+     * @param {string} xVerify 
+     * @param {{ [key: string]: any; }} requestBody 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ProfileApi
+     */
+    public updateAccountSettings(address: string, xVerify: string, requestBody: { [key: string]: any; }, options?: RawAxiosRequestConfig) {
+        return ProfileApiFp(this.configuration).updateAccountSettings(address, xVerify, requestBody, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Validate TON proof for given account address
+     * @param {string} address 
+     * @param {ApiProofValidationRequest} apiProofValidationRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ProfileApi
+     */
+    public validateProof(address: string, apiProofValidationRequest: ApiProofValidationRequest, options?: RawAxiosRequestConfig) {
+        return ProfileApiFp(this.configuration).validateProof(address, apiProofValidationRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+
+/**
+ * ReferralApi - axios parameter creator
+ * @export
+ */
+export const ReferralApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @summary Bind new referral
+         * @param {string} address 
+         * @param {string} referral 
+         * @param {string} xVerify TON proof for the given address
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        bindReferral: async (address: string, referral: string, xVerify: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'address' is not null or undefined
+            assertParamExists('bindReferral', 'address', address)
+            // verify required parameter 'referral' is not null or undefined
+            assertParamExists('bindReferral', 'referral', referral)
+            // verify required parameter 'xVerify' is not null or undefined
+            assertParamExists('bindReferral', 'xVerify', xVerify)
+            const localVarPath = `/v1/referral/{address}`
+                .replace(`{${"address"}}`, encodeURIComponent(String(address)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication ApiKey required
+            await setApiKeyToObject(localVarHeaderParameter, "X-Api-Key", configuration)
+
+            if (referral !== undefined) {
+                localVarQueryParameter['referral'] = referral;
+            }
+
+            if (xVerify != null) {
+                localVarHeaderParameter['x-verify'] = String(xVerify);
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Get account\'s referral info
+         * @param {string} address 
+         * @param {string} xVerify TON proof for the given address
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getReferralInfo: async (address: string, xVerify: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'address' is not null or undefined
+            assertParamExists('getReferralInfo', 'address', address)
+            // verify required parameter 'xVerify' is not null or undefined
+            assertParamExists('getReferralInfo', 'xVerify', xVerify)
+            const localVarPath = `/v1/referral/{address}`
+                .replace(`{${"address"}}`, encodeURIComponent(String(address)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication ApiKey required
+            await setApiKeyToObject(localVarHeaderParameter, "X-Api-Key", configuration)
+
+            if (xVerify != null) {
+                localVarHeaderParameter['x-verify'] = String(xVerify);
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Get account\'s list of referrals
+         * @param {string} address 
+         * @param {string} xVerify TON proof for the given address
+         * @param {number} [offset] 
+         * @param {number} [limit] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getReferralList: async (address: string, xVerify: string, offset?: number, limit?: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'address' is not null or undefined
+            assertParamExists('getReferralList', 'address', address)
+            // verify required parameter 'xVerify' is not null or undefined
+            assertParamExists('getReferralList', 'xVerify', xVerify)
+            const localVarPath = `/v1/referral/{address}/list`
+                .replace(`{${"address"}}`, encodeURIComponent(String(address)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication ApiKey required
+            await setApiKeyToObject(localVarHeaderParameter, "X-Api-Key", configuration)
+
+            if (offset !== undefined) {
+                localVarQueryParameter['offset'] = offset;
+            }
+
+            if (limit !== undefined) {
+                localVarQueryParameter['limit'] = limit;
+            }
+
+            if (xVerify != null) {
+                localVarHeaderParameter['x-verify'] = String(xVerify);
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Unbind existing referral. For internal usage only.
+         * @param {string} address 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        unbindReferral: async (address: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'address' is not null or undefined
+            assertParamExists('unbindReferral', 'address', address)
+            const localVarPath = `/v1/referral/{address}`
+                .replace(`{${"address"}}`, encodeURIComponent(String(address)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication ApiKey required
+            await setApiKeyToObject(localVarHeaderParameter, "X-Api-Key", configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * ReferralApi - functional programming interface
+ * @export
+ */
+export const ReferralApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = ReferralApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @summary Bind new referral
+         * @param {string} address 
+         * @param {string} referral 
+         * @param {string} xVerify TON proof for the given address
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async bindReferral(address: string, referral: string, xVerify: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.bindReferral(address, referral, xVerify, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ReferralApi.bindReferral']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary Get account\'s referral info
+         * @param {string} address 
+         * @param {string} xVerify TON proof for the given address
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getReferralInfo(address: string, xVerify: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ApiReferralAccountInfo>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getReferralInfo(address, xVerify, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ReferralApi.getReferralInfo']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary Get account\'s list of referrals
+         * @param {string} address 
+         * @param {string} xVerify TON proof for the given address
+         * @param {number} [offset] 
+         * @param {number} [limit] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getReferralList(address: string, xVerify: string, offset?: number, limit?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<ApiReferralInfo>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getReferralList(address, xVerify, offset, limit, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ReferralApi.getReferralList']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary Unbind existing referral. For internal usage only.
+         * @param {string} address 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async unbindReferral(address: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.unbindReferral(address, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ReferralApi.unbindReferral']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+    }
+};
+
+/**
+ * ReferralApi - factory interface
+ * @export
+ */
+export const ReferralApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = ReferralApiFp(configuration)
+    return {
+        /**
+         * 
+         * @summary Bind new referral
+         * @param {string} address 
+         * @param {string} referral 
+         * @param {string} xVerify TON proof for the given address
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        bindReferral(address: string, referral: string, xVerify: string, options?: any): AxiosPromise<void> {
+            return localVarFp.bindReferral(address, referral, xVerify, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Get account\'s referral info
+         * @param {string} address 
+         * @param {string} xVerify TON proof for the given address
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getReferralInfo(address: string, xVerify: string, options?: any): AxiosPromise<ApiReferralAccountInfo> {
+            return localVarFp.getReferralInfo(address, xVerify, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Get account\'s list of referrals
+         * @param {string} address 
+         * @param {string} xVerify TON proof for the given address
+         * @param {number} [offset] 
+         * @param {number} [limit] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getReferralList(address: string, xVerify: string, offset?: number, limit?: number, options?: any): AxiosPromise<Array<ApiReferralInfo>> {
+            return localVarFp.getReferralList(address, xVerify, offset, limit, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Unbind existing referral. For internal usage only.
+         * @param {string} address 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        unbindReferral(address: string, options?: any): AxiosPromise<void> {
+            return localVarFp.unbindReferral(address, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * ReferralApi - object-oriented interface
+ * @export
+ * @class ReferralApi
+ * @extends {BaseAPI}
+ */
+export class ReferralApi extends BaseAPI {
+    /**
+     * 
+     * @summary Bind new referral
+     * @param {string} address 
+     * @param {string} referral 
+     * @param {string} xVerify TON proof for the given address
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ReferralApi
+     */
+    public bindReferral(address: string, referral: string, xVerify: string, options?: RawAxiosRequestConfig) {
+        return ReferralApiFp(this.configuration).bindReferral(address, referral, xVerify, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Get account\'s referral info
+     * @param {string} address 
+     * @param {string} xVerify TON proof for the given address
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ReferralApi
+     */
+    public getReferralInfo(address: string, xVerify: string, options?: RawAxiosRequestConfig) {
+        return ReferralApiFp(this.configuration).getReferralInfo(address, xVerify, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Get account\'s list of referrals
+     * @param {string} address 
+     * @param {string} xVerify TON proof for the given address
+     * @param {number} [offset] 
+     * @param {number} [limit] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ReferralApi
+     */
+    public getReferralList(address: string, xVerify: string, offset?: number, limit?: number, options?: RawAxiosRequestConfig) {
+        return ReferralApiFp(this.configuration).getReferralList(address, xVerify, offset, limit, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Unbind existing referral. For internal usage only.
+     * @param {string} address 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ReferralApi
+     */
+    public unbindReferral(address: string, options?: RawAxiosRequestConfig) {
+        return ReferralApiFp(this.configuration).unbindReferral(address, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+
+/**
  * RoutingApi - axios parameter creator
  * @export
  */
@@ -1802,16 +3561,15 @@ export const RoutingApiAxiosParamCreator = function (configuration?: Configurati
             };
         },
         /**
-         * Returns pre-built transactions for the given route. It is assumed that transactions will be signed and sent by the sender via wallet
-         * @param {ApiTransactionsRequest} apiTransactionsRequest 
+         * Returns pre-built transaction for the given stake request. It is assumed that transaction will be signed and sent by the sender via wallet
+         * @param {ApiTonStakingTransactionRequest} apiTonStakingTransactionRequest 
          * @param {*} [options] Override http request option.
-         * @deprecated
          * @throws {RequiredError}
          */
-        buildTransactions: async (apiTransactionsRequest: ApiTransactionsRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'apiTransactionsRequest' is not null or undefined
-            assertParamExists('buildTransactions', 'apiTransactionsRequest', apiTransactionsRequest)
-            const localVarPath = `/v1/route/transactions`;
+        buildTonStakeTransaction: async (apiTonStakingTransactionRequest: ApiTonStakingTransactionRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'apiTonStakingTransactionRequest' is not null or undefined
+            assertParamExists('buildTonStakeTransaction', 'apiTonStakingTransactionRequest', apiTonStakingTransactionRequest)
+            const localVarPath = `/v2/stake/ton/transaction`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -1833,7 +3591,45 @@ export const RoutingApiAxiosParamCreator = function (configuration?: Configurati
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(apiTransactionsRequest, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(apiTonStakingTransactionRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Returns pre-built transaction for the given unstake request. It is assumed that transaction will be signed and sent by the sender via wallet
+         * @param {ApiTonStakingTransactionRequest} apiTonStakingTransactionRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        buildTonUnstakeTransaction: async (apiTonStakingTransactionRequest: ApiTonStakingTransactionRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'apiTonStakingTransactionRequest' is not null or undefined
+            assertParamExists('buildTonUnstakeTransaction', 'apiTonStakingTransactionRequest', apiTonStakingTransactionRequest)
+            const localVarPath = `/v2/unstake/ton/transaction`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication ApiKey required
+            await setApiKeyToObject(localVarHeaderParameter, "X-Api-Key", configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(apiTonStakingTransactionRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -1940,16 +3736,27 @@ export const RoutingApiFp = function(configuration?: Configuration) {
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
-         * Returns pre-built transactions for the given route. It is assumed that transactions will be signed and sent by the sender via wallet
-         * @param {ApiTransactionsRequest} apiTransactionsRequest 
+         * Returns pre-built transaction for the given stake request. It is assumed that transaction will be signed and sent by the sender via wallet
+         * @param {ApiTonStakingTransactionRequest} apiTonStakingTransactionRequest 
          * @param {*} [options] Override http request option.
-         * @deprecated
          * @throws {RequiredError}
          */
-        async buildTransactions(apiTransactionsRequest: ApiTransactionsRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<ApiSwapTransaction>>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.buildTransactions(apiTransactionsRequest, options);
+        async buildTonStakeTransaction(apiTonStakingTransactionRequest: ApiTonStakingTransactionRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ApiTransactionBoc>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.buildTonStakeTransaction(apiTonStakingTransactionRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['RoutingApi.buildTransactions']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['RoutingApi.buildTonStakeTransaction']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Returns pre-built transaction for the given unstake request. It is assumed that transaction will be signed and sent by the sender via wallet
+         * @param {ApiTonStakingTransactionRequest} apiTonStakingTransactionRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async buildTonUnstakeTransaction(apiTonStakingTransactionRequest: ApiTonStakingTransactionRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ApiTransactionBoc>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.buildTonUnstakeTransaction(apiTonStakingTransactionRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['RoutingApi.buildTonUnstakeTransaction']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -1996,14 +3803,22 @@ export const RoutingApiFactory = function (configuration?: Configuration, basePa
             return localVarFp.buildRoute(apiRouteRequest, options).then((request) => request(axios, basePath));
         },
         /**
-         * Returns pre-built transactions for the given route. It is assumed that transactions will be signed and sent by the sender via wallet
-         * @param {ApiTransactionsRequest} apiTransactionsRequest 
+         * Returns pre-built transaction for the given stake request. It is assumed that transaction will be signed and sent by the sender via wallet
+         * @param {ApiTonStakingTransactionRequest} apiTonStakingTransactionRequest 
          * @param {*} [options] Override http request option.
-         * @deprecated
          * @throws {RequiredError}
          */
-        buildTransactions(apiTransactionsRequest: ApiTransactionsRequest, options?: any): AxiosPromise<Array<ApiSwapTransaction>> {
-            return localVarFp.buildTransactions(apiTransactionsRequest, options).then((request) => request(axios, basePath));
+        buildTonStakeTransaction(apiTonStakingTransactionRequest: ApiTonStakingTransactionRequest, options?: any): AxiosPromise<ApiTransactionBoc> {
+            return localVarFp.buildTonStakeTransaction(apiTonStakingTransactionRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Returns pre-built transaction for the given unstake request. It is assumed that transaction will be signed and sent by the sender via wallet
+         * @param {ApiTonStakingTransactionRequest} apiTonStakingTransactionRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        buildTonUnstakeTransaction(apiTonStakingTransactionRequest: ApiTonStakingTransactionRequest, options?: any): AxiosPromise<ApiTransactionBoc> {
+            return localVarFp.buildTonUnstakeTransaction(apiTonStakingTransactionRequest, options).then((request) => request(axios, basePath));
         },
         /**
          * Returns pre-built transactions for the given route. It is assumed that transactions will be signed and sent by the sender via wallet
@@ -2045,15 +3860,25 @@ export class RoutingApi extends BaseAPI {
     }
 
     /**
-     * Returns pre-built transactions for the given route. It is assumed that transactions will be signed and sent by the sender via wallet
-     * @param {ApiTransactionsRequest} apiTransactionsRequest 
+     * Returns pre-built transaction for the given stake request. It is assumed that transaction will be signed and sent by the sender via wallet
+     * @param {ApiTonStakingTransactionRequest} apiTonStakingTransactionRequest 
      * @param {*} [options] Override http request option.
-     * @deprecated
      * @throws {RequiredError}
      * @memberof RoutingApi
      */
-    public buildTransactions(apiTransactionsRequest: ApiTransactionsRequest, options?: RawAxiosRequestConfig) {
-        return RoutingApiFp(this.configuration).buildTransactions(apiTransactionsRequest, options).then((request) => request(this.axios, this.basePath));
+    public buildTonStakeTransaction(apiTonStakingTransactionRequest: ApiTonStakingTransactionRequest, options?: RawAxiosRequestConfig) {
+        return RoutingApiFp(this.configuration).buildTonStakeTransaction(apiTonStakingTransactionRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Returns pre-built transaction for the given unstake request. It is assumed that transaction will be signed and sent by the sender via wallet
+     * @param {ApiTonStakingTransactionRequest} apiTonStakingTransactionRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof RoutingApi
+     */
+    public buildTonUnstakeTransaction(apiTonStakingTransactionRequest: ApiTonStakingTransactionRequest, options?: RawAxiosRequestConfig) {
+        return RoutingApiFp(this.configuration).buildTonUnstakeTransaction(apiTonStakingTransactionRequest, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

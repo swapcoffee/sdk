@@ -1,6 +1,6 @@
 {
   "name": "@swap-coffee/sdk",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "SDK for swap.coffee DEX aggregator",
   "license": "MIT",
   "homepage": "https://swap.coffee",
