@@ -57,12 +57,6 @@ export interface ApiAuthToken {
     'name': string;
     /**
      * 
-     * @type {boolean}
-     * @memberof ApiAuthToken
-     */
-    'administrative': boolean;
-    /**
-     * 
      * @type {number}
      * @memberof ApiAuthToken
      */
@@ -81,7 +75,10 @@ export interface ApiAuthToken {
  */
 
 export const ApiAuthTokenOption = {
-    AllowCycles: 'allow_cycles'
+    Administrator: 'administrator',
+    Moderator: 'moderator',
+    AllowCycles: 'allow_cycles',
+    ExtendedTxStatus: 'extended_tx_status'
 } as const;
 
 export type ApiAuthTokenOption = typeof ApiAuthTokenOption[keyof typeof ApiAuthTokenOption];
@@ -100,47 +97,6 @@ export interface ApiBlockchain {
      */
     'name': string;
 }
-/**
- * 
- * @export
- * @interface ApiCashbackCondition
- */
-export interface ApiCashbackCondition {
-    /**
-     * 
-     * @type {ApiCashbackConditionType}
-     * @memberof ApiCashbackCondition
-     */
-    'type': ApiCashbackConditionType;
-    /**
-     * Arguments required to construct condition type
-     * @type {Array<string>}
-     * @memberof ApiCashbackCondition
-     */
-    'args'?: Array<string>;
-}
-
-
-/**
- * 
- * @export
- * @enum {string}
- */
-
-export const ApiCashbackConditionType = {
-    None: 'none',
-    Listed: 'listed',
-    PartnerAddress: 'partner_address',
-    Tokens: 'tokens',
-    TokensPair: 'tokens-pair',
-    TokensExact: 'tokens-exact',
-    UsersWhitelist: 'users-whitelist',
-    SwapTxMinAmount: 'swap-tx-min-amount'
-} as const;
-
-export type ApiCashbackConditionType = typeof ApiCashbackConditionType[keyof typeof ApiCashbackConditionType];
-
-
 /**
  * 
  * @export
@@ -173,10 +129,10 @@ export interface ApiCashbackCreateRequest {
     'reward_token': string;
     /**
      * 
-     * @type {Array<ApiCashbackCondition>}
+     * @type {Array<ApiDexSwapCondition>}
      * @memberof ApiCashbackCreateRequest
      */
-    'conditions': Array<ApiCashbackCondition>;
+    'conditions': Array<ApiDexSwapCondition>;
     /**
      * How many tokens will be distributed to users
      * @type {number}
@@ -221,10 +177,10 @@ export interface ApiCashbackCreateRequest {
     'image_url': string;
     /**
      * 
-     * @type {Array<ApiCashbackReference>}
+     * @type {Array<ApiContentReference>}
      * @memberof ApiCashbackCreateRequest
      */
-    'references': Array<ApiCashbackReference>;
+    'references': Array<ApiContentReference>;
 }
 /**
  * 
@@ -264,10 +220,10 @@ export interface ApiCashbackInfo {
     'reward_token': string;
     /**
      * 
-     * @type {Array<ApiCashbackCondition>}
+     * @type {Array<ApiDexSwapCondition>}
      * @memberof ApiCashbackInfo
      */
-    'conditions': Array<ApiCashbackCondition>;
+    'conditions': Array<ApiDexSwapCondition>;
     /**
      * How many tokens will be distributed to users
      * @type {number}
@@ -318,10 +274,10 @@ export interface ApiCashbackInfo {
     'image_url': string;
     /**
      * 
-     * @type {Array<ApiCashbackReference>}
+     * @type {Array<ApiContentReference>}
      * @memberof ApiCashbackInfo
      */
-    'references': Array<ApiCashbackReference>;
+    'references': Array<ApiContentReference>;
 }
 /**
  * 
@@ -414,25 +370,6 @@ export interface ApiCashbackLimitUpdateRequest {
 /**
  * 
  * @export
- * @interface ApiCashbackReference
- */
-export interface ApiCashbackReference {
-    /**
-     * 
-     * @type {string}
-     * @memberof ApiCashbackReference
-     */
-    'ref_name': string;
-    /**
-     * 
-     * @type {string}
-     * @memberof ApiCashbackReference
-     */
-    'ref_url': string;
-}
-/**
- * 
- * @export
  * @interface ApiCashbackUpdateRequest
  */
 export interface ApiCashbackUpdateRequest {
@@ -462,10 +399,10 @@ export interface ApiCashbackUpdateRequest {
     'reward_token'?: string;
     /**
      * 
-     * @type {Array<ApiCashbackCondition>}
+     * @type {Array<ApiDexSwapCondition>}
      * @memberof ApiCashbackUpdateRequest
      */
-    'conditions'?: Array<ApiCashbackCondition>;
+    'conditions'?: Array<ApiDexSwapCondition>;
     /**
      * How many tokens will be distributed to users
      * @type {number}
@@ -510,10 +447,10 @@ export interface ApiCashbackUpdateRequest {
     'image_url'?: string;
     /**
      * 
-     * @type {Array<ApiCashbackReference>}
+     * @type {Array<ApiContentReference>}
      * @memberof ApiCashbackUpdateRequest
      */
-    'references'?: Array<ApiCashbackReference>;
+    'references'?: Array<ApiContentReference>;
 }
 /**
  * 
@@ -676,7 +613,10 @@ export interface ApiClaimingTokenStats {
 export const ApiClaimingType = {
     All: 'all',
     Referral: 'referral',
-    Cashback: 'cashback'
+    Cashback: 'cashback',
+    Staking: 'staking',
+    RewardsStonfi: 'rewards_stonfi',
+    RewardsDedust: 'rewards_dedust'
 } as const;
 
 export type ApiClaimingType = typeof ApiClaimingType[keyof typeof ApiClaimingType];
@@ -706,77 +646,138 @@ export interface ApiClaimingTypeStats {
 /**
  * 
  * @export
- * @interface ApiContestInformation
+ * @interface ApiContentReference
  */
-export interface ApiContestInformation {
+export interface ApiContentReference {
     /**
      * 
      * @type {string}
-     * @memberof ApiContestInformation
+     * @memberof ApiContentReference
+     */
+    'ref_name': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ApiContentReference
+     */
+    'ref_url': string;
+}
+/**
+ * 
+ * @export
+ * @interface ApiContestInfo
+ */
+export interface ApiContestInfo {
+    /**
+     * 
+     * @type {string}
+     * @memberof ApiContestInfo
+     */
+    'title': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ApiContestInfo
      */
     'description': string;
     /**
+     * 
+     * @type {Array<ApiContentReference>}
+     * @memberof ApiContestInfo
+     */
+    'references': Array<ApiContentReference>;
+    /**
+     * 
+     * @type {Array<ApiDexSwapCondition>}
+     * @memberof ApiContestInfo
+     */
+    'conditions': Array<ApiDexSwapCondition>;
+    /**
+     * 
+     * @type {Array<ApiContestReward>}
+     * @memberof ApiContestInfo
+     */
+    'rewards': Array<ApiContestReward>;
+    /**
      * in seconds
      * @type {number}
-     * @memberof ApiContestInformation
+     * @memberof ApiContestInfo
      */
     'start_time_unix': number;
     /**
      * in seconds
      * @type {number}
-     * @memberof ApiContestInformation
+     * @memberof ApiContestInfo
      */
     'end_time_unix': number;
     /**
      * 
-     * @type {Array<string>}
-     * @memberof ApiContestInformation
+     * @type {string}
+     * @memberof ApiContestInfo
      */
-    'tokens': Array<string>;
+    'image_url': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ApiContestInfo
+     */
+    'total_reward': string;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof ApiContestInfo
+     */
+    'hidden': boolean;
 }
 /**
  * 
  * @export
- * @interface ApiContestInformationResponse
+ * @interface ApiContestInfoWithID
  */
-export interface ApiContestInformationResponse {
+export interface ApiContestInfoWithID {
     /**
      * 
      * @type {number}
-     * @memberof ApiContestInformationResponse
+     * @memberof ApiContestInfoWithID
      */
     'id': number;
     /**
      * 
-     * @type {ApiContestInformation}
-     * @memberof ApiContestInformationResponse
+     * @type {ApiContestInfo}
+     * @memberof ApiContestInfoWithID
      */
-    'info': ApiContestInformation;
+    'info': ApiContestInfo;
 }
 /**
  * 
  * @export
- * @interface ApiContestTokenStats
+ * @interface ApiContestReward
  */
-export interface ApiContestTokenStats {
-    /**
-     * token master-contract address
-     * @type {string}
-     * @memberof ApiContestTokenStats
-     */
-    'token': string;
+export interface ApiContestReward {
     /**
      * 
      * @type {string}
-     * @memberof ApiContestTokenStats
+     * @memberof ApiContestReward
      */
-    'volume_raw': string;
+    'reward': string;
     /**
      * 
      * @type {number}
-     * @memberof ApiContestTokenStats
+     * @memberof ApiContestReward
      */
-    'volume_usd': number;
+    'place'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof ApiContestReward
+     */
+    'place_from'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof ApiContestReward
+     */
+    'place_to'?: number;
 }
 /**
  * 
@@ -798,10 +799,10 @@ export interface ApiContestUserStats {
     'position': number;
     /**
      * 
-     * @type {Array<ApiContestTokenStats>}
+     * @type {number}
      * @memberof ApiContestUserStats
      */
-    'tokens': Array<ApiContestTokenStats>;
+    'volume_usd': number;
 }
 /**
  * 
@@ -831,6 +832,31 @@ export interface ApiCreateAuthTokenRequest {
 /**
  * 
  * @export
+ * @interface ApiCreateStakeRequest
+ */
+export interface ApiCreateStakeRequest {
+    /**
+     * Token to be staked.
+     * @type {string}
+     * @memberof ApiCreateStakeRequest
+     */
+    'asset_address': string;
+    /**
+     * 
+     * @type {number}
+     * @memberof ApiCreateStakeRequest
+     */
+    'amount_to_stake_raw': number;
+    /**
+     * Lock identifier.
+     * @type {number}
+     * @memberof ApiCreateStakeRequest
+     */
+    'period_id': number;
+}
+/**
+ * 
+ * @export
  * @interface ApiDex
  */
 export interface ApiDex {
@@ -847,6 +873,49 @@ export interface ApiDex {
      */
     'name': string;
 }
+/**
+ * 
+ * @export
+ * @interface ApiDexSwapCondition
+ */
+export interface ApiDexSwapCondition {
+    /**
+     * 
+     * @type {ApiDexSwapConditionType}
+     * @memberof ApiDexSwapCondition
+     */
+    'type': ApiDexSwapConditionType;
+    /**
+     * Arguments required to construct condition type
+     * @type {Array<string>}
+     * @memberof ApiDexSwapCondition
+     */
+    'args'?: Array<string>;
+}
+
+
+/**
+ * 
+ * @export
+ * @enum {string}
+ */
+
+export const ApiDexSwapConditionType = {
+    Unique: 'unique',
+    Listed: 'listed',
+    PartnerAddress: 'partner_address',
+    Tokens: 'tokens',
+    TokensPair: 'tokens-pair',
+    TokensExact: 'tokens-exact',
+    UsersWhitelist: 'users-whitelist',
+    SwapTxMinAmount: 'swap-tx-min-amount',
+    BlacklistPair: 'blacklist-pair',
+    BlacklistTokens: 'blacklist-tokens'
+} as const;
+
+export type ApiDexSwapConditionType = typeof ApiDexSwapConditionType[keyof typeof ApiDexSwapConditionType];
+
+
 /**
  * 
  * @export
@@ -890,6 +959,19 @@ export interface ApiError {
      * @memberof ApiError
      */
     'error': string;
+}
+/**
+ * 
+ * @export
+ * @interface ApiExtendStakeRequest
+ */
+export interface ApiExtendStakeRequest {
+    /**
+     * Lock identifier.
+     * @type {number}
+     * @memberof ApiExtendStakeRequest
+     */
+    'period_id': number;
 }
 /**
  * 
@@ -1440,6 +1522,12 @@ export interface ApiRoute {
     'price_impact': number;
     /**
      * 
+     * @type {number}
+     * @memberof ApiRoute
+     */
+    'estimated_cashback_usd'?: number;
+    /**
+     * 
      * @type {Array<ApiRoutingStep>}
      * @memberof ApiRoute
      */
@@ -1493,6 +1581,50 @@ export interface ApiRouteRequest {
      * @memberof ApiRouteRequest
      */
     'pool_selector'?: ApiPoolSelector;
+    /**
+     * 
+     * @type {ApiRouteRequestAdditionalData}
+     * @memberof ApiRouteRequest
+     */
+    'additional_data'?: ApiRouteRequestAdditionalData;
+}
+/**
+ * 
+ * @export
+ * @interface ApiRouteRequestAdditionalData
+ */
+export interface ApiRouteRequestAdditionalData {
+    /**
+     * 
+     * @type {string}
+     * @memberof ApiRouteRequestAdditionalData
+     */
+    'sender_address'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ApiRouteRequestAdditionalData
+     */
+    'referral_name'?: string;
+}
+/**
+ * 
+ * @export
+ * @interface ApiRouteResult
+ */
+export interface ApiRouteResult {
+    /**
+     * 
+     * @type {Array<ApiSplitResult>}
+     * @memberof ApiRouteResult
+     */
+    'splits': Array<ApiSplitResult>;
+    /**
+     * Whether this is the final view of the route result (i.e. it won\'t change anymore) and therefore it will be invalidated from our cache soon
+     * @type {boolean}
+     * @memberof ApiRouteResult
+     */
+    'terminal': boolean;
 }
 /**
  * 
@@ -1544,11 +1676,580 @@ export interface ApiRoutingStep {
     'recommended_gas': number;
     /**
      * 
+     * @type {number}
+     * @memberof ApiRoutingStep
+     */
+    'average_gas': number;
+    /**
+     * 
      * @type {Array<ApiRoutingStep>}
      * @memberof ApiRoutingStep
      */
     'next'?: Array<ApiRoutingStep>;
 }
+/**
+ * 
+ * @export
+ * @interface ApiSplitResult
+ */
+export interface ApiSplitResult {
+    /**
+     * 
+     * @type {ApiTransactionStatus}
+     * @memberof ApiSplitResult
+     */
+    'status': ApiTransactionStatus;
+    /**
+     * 
+     * @type {Array<ApiSplitStepResult>}
+     * @memberof ApiSplitResult
+     */
+    'steps': Array<ApiSplitStepResult>;
+    /**
+     * 
+     * @type {ApiTokenWithAmount}
+     * @memberof ApiSplitResult
+     */
+    'input'?: ApiTokenWithAmount;
+    /**
+     * 
+     * @type {ApiTokenWithAmount}
+     * @memberof ApiSplitResult
+     */
+    'output'?: ApiTokenWithAmount;
+    /**
+     * Whether funds were paid from the pools to their receiver
+     * @type {boolean}
+     * @memberof ApiSplitResult
+     */
+    'paid': boolean;
+    /**
+     * Amount of nanotons, dedicated to be spent on gas
+     * @type {number}
+     * @memberof ApiSplitResult
+     */
+    'gas_sent': number;
+    /**
+     * Amount of nanotons, dedicated to be spent on gas, that have been returned. Present only when paid is true
+     * @type {number}
+     * @memberof ApiSplitResult
+     */
+    'gas_received'?: number;
+}
+
+
+/**
+ * 
+ * @export
+ * @interface ApiSplitStepResult
+ */
+export interface ApiSplitStepResult {
+    /**
+     * 
+     * @type {ApiTransactionStepStatus}
+     * @memberof ApiSplitStepResult
+     */
+    'status': ApiTransactionStepStatus;
+    /**
+     * 
+     * @type {ApiTokenWithAmount}
+     * @memberof ApiSplitStepResult
+     */
+    'input'?: ApiTokenWithAmount;
+    /**
+     * 
+     * @type {ApiTokenWithAmount}
+     * @memberof ApiSplitStepResult
+     */
+    'output'?: ApiTokenWithAmount;
+}
+
+
+/**
+ * 
+ * @export
+ * @interface ApiStakingGlobalInfo
+ */
+export interface ApiStakingGlobalInfo {
+    /**
+     * 
+     * @type {number}
+     * @memberof ApiStakingGlobalInfo
+     */
+    'total_points': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof ApiStakingGlobalInfo
+     */
+    'apr': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof ApiStakingGlobalInfo
+     */
+    'total_locked_native': number;
+    /**
+     * 
+     * @type {Array<ApiStakingTokenInfoLock>}
+     * @memberof ApiStakingGlobalInfo
+     */
+    'locked_tokens': Array<ApiStakingTokenInfoLock>;
+    /**
+     * 
+     * @type {Array<ApiStakingTokenInfo>}
+     * @memberof ApiStakingGlobalInfo
+     */
+    'distributed_rewards': Array<ApiStakingTokenInfo>;
+    /**
+     * 
+     * @type {Array<ApiStakingRewardsTokenInfo>}
+     * @memberof ApiStakingGlobalInfo
+     */
+    'actual_rewards': Array<ApiStakingRewardsTokenInfo>;
+    /**
+     * 
+     * @type {Array<ApiStakingPositionPeriods>}
+     * @memberof ApiStakingGlobalInfo
+     */
+    'periods': Array<ApiStakingPositionPeriods>;
+}
+/**
+ * 
+ * @export
+ * @interface ApiStakingInfo
+ */
+export interface ApiStakingInfo {
+    /**
+     * 
+     * @type {string}
+     * @memberof ApiStakingInfo
+     */
+    'name': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ApiStakingInfo
+     */
+    'master_address': string;
+}
+/**
+ * 
+ * @export
+ * @interface ApiStakingPositionInfo
+ */
+export interface ApiStakingPositionInfo {
+    /**
+     * 
+     * @type {number}
+     * @memberof ApiStakingPositionInfo
+     */
+    'id': number;
+    /**
+     * Staked token
+     * @type {string}
+     * @memberof ApiStakingPositionInfo
+     */
+    'locked_asset_address': string;
+    /**
+     * Staked token amount in raw
+     * @type {number}
+     * @memberof ApiStakingPositionInfo
+     */
+    'locked_asset_amount_raw': number;
+    /**
+     * Staked token volume converted to main staking token
+     * @type {number}
+     * @memberof ApiStakingPositionInfo
+     */
+    'locked_native': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof ApiStakingPositionInfo
+     */
+    'locked_usd': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof ApiStakingPositionInfo
+     */
+    'start_lock_seconds_utc': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof ApiStakingPositionInfo
+     */
+    'end_lock_seconds_utc': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof ApiStakingPositionInfo
+     */
+    'points_amount': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof ApiStakingPositionInfo
+     */
+    'period_id': number;
+    /**
+     * 
+     * @type {Array<ApiStakingPositionPeriods>}
+     * @memberof ApiStakingPositionInfo
+     */
+    'available_periods': Array<ApiStakingPositionPeriods>;
+    /**
+     * 
+     * @type {Array<ApiStakingTokenInfo>}
+     * @memberof ApiStakingPositionInfo
+     */
+    'earned_rewards': Array<ApiStakingTokenInfo>;
+}
+/**
+ * 
+ * @export
+ * @interface ApiStakingPositionPeriods
+ */
+export interface ApiStakingPositionPeriods {
+    /**
+     * Period id, to be passed into protocol.
+     * @type {number}
+     * @memberof ApiStakingPositionPeriods
+     */
+    'period_id': number;
+    /**
+     * How much additional points will be accrued.
+     * @type {number}
+     * @memberof ApiStakingPositionPeriods
+     */
+    'percentage': number;
+    /**
+     * How much wait till position unlock.
+     * @type {number}
+     * @memberof ApiStakingPositionPeriods
+     */
+    'lock_duration': number;
+}
+/**
+ * 
+ * @export
+ * @interface ApiStakingRewardsTokenInfo
+ */
+export interface ApiStakingRewardsTokenInfo {
+    /**
+     * Token address.
+     * @type {string}
+     * @memberof ApiStakingRewardsTokenInfo
+     */
+    'token_address': string;
+    /**
+     * Timestamp in unix seconds
+     * @type {number}
+     * @memberof ApiStakingRewardsTokenInfo
+     */
+    'end_distribution_unix': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof ApiStakingRewardsTokenInfo
+     */
+    'reward_rate': number;
+}
+/**
+ * 
+ * @export
+ * @interface ApiStakingTokenInfo
+ */
+export interface ApiStakingTokenInfo {
+    /**
+     * Reward token address.
+     * @type {string}
+     * @memberof ApiStakingTokenInfo
+     */
+    'token_address': string;
+    /**
+     * 
+     * @type {number}
+     * @memberof ApiStakingTokenInfo
+     */
+    'asset_usd': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof ApiStakingTokenInfo
+     */
+    'asset_raw': number;
+}
+/**
+ * 
+ * @export
+ * @interface ApiStakingTokenInfoLock
+ */
+export interface ApiStakingTokenInfoLock {
+    /**
+     * 
+     * @type {ApiToken}
+     * @memberof ApiStakingTokenInfoLock
+     */
+    'token': ApiToken;
+    /**
+     * 
+     * @type {number}
+     * @memberof ApiStakingTokenInfoLock
+     */
+    'normalizer': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof ApiStakingTokenInfoLock
+     */
+    'price_per_token_usd': number;
+}
+/**
+ * 
+ * @export
+ * @interface ApiStakingUserInfo
+ */
+export interface ApiStakingUserInfo {
+    /**
+     * 
+     * @type {number}
+     * @memberof ApiStakingUserInfo
+     */
+    'total_points': number;
+    /**
+     * 
+     * @type {Array<ApiStakingTokenInfo>}
+     * @memberof ApiStakingUserInfo
+     */
+    'locked_tokens': Array<ApiStakingTokenInfo>;
+    /**
+     * 
+     * @type {Array<ApiStakingTokenInfo>}
+     * @memberof ApiStakingUserInfo
+     */
+    'paid_rewards': Array<ApiStakingTokenInfo>;
+    /**
+     * 
+     * @type {Array<ApiStakingPositionInfo>}
+     * @memberof ApiStakingUserInfo
+     */
+    'positions': Array<ApiStakingPositionInfo>;
+}
+/**
+ * 
+ * @export
+ * @interface ApiStrategyOrder
+ */
+export interface ApiStrategyOrder {
+    /**
+     * 
+     * @type {number}
+     * @memberof ApiStrategyOrder
+     */
+    'id': number;
+    /**
+     * 
+     * @type {ApiStrategyOrderType}
+     * @memberof ApiStrategyOrder
+     */
+    'type': ApiStrategyOrderType;
+    /**
+     * 
+     * @type {string}
+     * @memberof ApiStrategyOrder
+     */
+    'wallet': string;
+    /**
+     * 
+     * @type {ApiStrategyOrderStatus}
+     * @memberof ApiStrategyOrder
+     */
+    'status': ApiStrategyOrderStatus;
+    /**
+     * Unix time in seconds
+     * @type {number}
+     * @memberof ApiStrategyOrder
+     */
+    'creation_timestamp': number;
+    /**
+     * 
+     * @type {ApiToken}
+     * @memberof ApiStrategyOrder
+     */
+    'token_from': ApiToken;
+    /**
+     * 
+     * @type {ApiToken}
+     * @memberof ApiStrategyOrder
+     */
+    'token_to': ApiToken;
+    /**
+     * 
+     * @type {number}
+     * @memberof ApiStrategyOrder
+     */
+    'initial_input_amount': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof ApiStrategyOrder
+     */
+    'current_input_amount': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof ApiStrategyOrder
+     */
+    'min_output_amount': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof ApiStrategyOrder
+     */
+    'current_output_amount': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof ApiStrategyOrder
+     */
+    'max_suborders': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof ApiStrategyOrder
+     */
+    'suborders_executed': number;
+    /**
+     * Max amount of swaps to be potentially executed (including those that fail to reasons like slippage tolerance abortion)
+     * @type {number}
+     * @memberof ApiStrategyOrder
+     */
+    'max_invocations': number;
+    /**
+     * Amount of swaps that had already been tried to be executed (including those that failed to reasons like slippage tolerance abortion)
+     * @type {number}
+     * @memberof ApiStrategyOrder
+     */
+    'invocations_executed': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof ApiStrategyOrder
+     */
+    'slippage': number;
+    /**
+     * Max path length in tokens for every route that could potentially be executed within this order
+     * @type {number}
+     * @memberof ApiStrategyOrder
+     */
+    'max_path_length': number;
+    /**
+     * Amount of this order transactions that were sent, but their result is still unknown
+     * @type {number}
+     * @memberof ApiStrategyOrder
+     */
+    'active_transactions': number;
+    /**
+     * Unix time in seconds
+     * @type {number}
+     * @memberof ApiStrategyOrder
+     */
+    'close_timestamp'?: number;
+}
+
+
+/**
+ * 
+ * @export
+ * @interface ApiStrategyOrderCreationRequest
+ */
+export interface ApiStrategyOrderCreationRequest {
+    /**
+     * 
+     * @type {ApiStrategyOrderType}
+     * @memberof ApiStrategyOrderCreationRequest
+     */
+    'type': ApiStrategyOrderType;
+    /**
+     * 
+     * @type {ApiTokenAddress}
+     * @memberof ApiStrategyOrderCreationRequest
+     */
+    'token_from': ApiTokenAddress;
+    /**
+     * 
+     * @type {ApiTokenAddress}
+     * @memberof ApiStrategyOrderCreationRequest
+     */
+    'token_to': ApiTokenAddress;
+    /**
+     * 
+     * @type {number}
+     * @memberof ApiStrategyOrderCreationRequest
+     */
+    'input_amount': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof ApiStrategyOrderCreationRequest
+     */
+    'min_output_amount': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof ApiStrategyOrderCreationRequest
+     */
+    'max_suborders': number;
+    /**
+     * Max amount of swaps to be potentially executed (including those that fail to reasons like slippage tolerance abortion)
+     * @type {number}
+     * @memberof ApiStrategyOrderCreationRequest
+     */
+    'max_invocations': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof ApiStrategyOrderCreationRequest
+     */
+    'slippage': number;
+}
+
+
+/**
+ * 
+ * @export
+ * @enum {string}
+ */
+
+export const ApiStrategyOrderStatus = {
+    Active: 'active',
+    RequestedCancellation: 'requested_cancellation',
+    CancelledByUser: 'cancelled_by_user',
+    CancelledBySystem: 'cancelled_by_system',
+    Executed: 'executed',
+    MaxRetriesExceeded: 'max_retries_exceeded'
+} as const;
+
+export type ApiStrategyOrderStatus = typeof ApiStrategyOrderStatus[keyof typeof ApiStrategyOrderStatus];
+
+
+/**
+ * 
+ * @export
+ * @enum {string}
+ */
+
+export const ApiStrategyOrderType = {
+    Limit: 'limit',
+    Dca: 'dca',
+    Vca: 'vca'
+} as const;
+
+export type ApiStrategyOrderType = typeof ApiStrategyOrderType[keyof typeof ApiStrategyOrderType];
+
+
 /**
  * 
  * @export
@@ -1793,6 +2494,25 @@ export interface ApiTokenRestrictions {
 /**
  * 
  * @export
+ * @interface ApiTokenWithAmount
+ */
+export interface ApiTokenWithAmount {
+    /**
+     * 
+     * @type {ApiToken}
+     * @memberof ApiTokenWithAmount
+     */
+    'token': ApiToken;
+    /**
+     * 
+     * @type {number}
+     * @memberof ApiTokenWithAmount
+     */
+    'amount': number;
+}
+/**
+ * 
+ * @export
  * @interface ApiTonProof
  */
 export interface ApiTonProof {
@@ -1882,6 +2602,12 @@ export interface ApiTransactionBoc {
      * @memberof ApiTransactionBoc
      */
     'value': string;
+    /**
+     * Base64-encoded cell. Treated as a stateInit field in TonConnect transaction.
+     * @type {string}
+     * @memberof ApiTransactionBoc
+     */
+    'state_init'?: string;
 }
 /**
  * 
@@ -1990,7 +2716,7 @@ export interface ApiTransactionsRequest {
      */
     'sender_address': string;
     /**
-     * Slippage in fractions (1 = 100%, 0 = 0%). If the slippage is exceeded, the transaction will not be executed and intermediate tokens will be returned to the sender.
+     * If the slippage is exceeded, the transaction will not be executed and intermediate tokens will be returned to the sender.
      * @type {number}
      * @memberof ApiTransactionsRequest
      */
@@ -2026,6 +2752,31 @@ export interface ApiTransactionsResponse {
      * @memberof ApiTransactionsResponse
      */
     'transactions': Array<ApiSwapTransaction>;
+}
+/**
+ * 
+ * @export
+ * @interface ApiTxStats
+ */
+export interface ApiTxStats {
+    /**
+     * 
+     * @type {number}
+     * @memberof ApiTxStats
+     */
+    'count': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof ApiTxStats
+     */
+    'volume': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof ApiTxStats
+     */
+    'fees': number;
 }
 /**
  * 
@@ -2066,6 +2817,44 @@ export interface ApiUserCashbackInfoTotal {
      * @memberof ApiUserCashbackInfoTotal
      */
     'total_earned_usd': number;
+}
+/**
+ * 
+ * @export
+ * @interface ApiUserPoints
+ */
+export interface ApiUserPoints {
+    /**
+     * 
+     * @type {number}
+     * @memberof ApiUserPoints
+     */
+    'points': number;
+}
+/**
+ * 
+ * @export
+ * @interface ApiUserStakeTokenInfo
+ */
+export interface ApiUserStakeTokenInfo {
+    /**
+     * Token address.
+     * @type {string}
+     * @memberof ApiUserStakeTokenInfo
+     */
+    'asset_address': string;
+    /**
+     * 
+     * @type {number}
+     * @memberof ApiUserStakeTokenInfo
+     */
+    'asset_amount_raw': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof ApiUserStakeTokenInfo
+     */
+    'asset_amount_usd': number;
 }
 /**
  * 
@@ -2385,7 +3174,7 @@ export const AuthApiFactory = function (configuration?: Configuration, basePath?
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        createAuthToken(apiCreateAuthTokenRequest: ApiCreateAuthTokenRequest, options?: any): AxiosPromise<ApiAuthToken> {
+        createAuthToken(apiCreateAuthTokenRequest: ApiCreateAuthTokenRequest, options?: RawAxiosRequestConfig): AxiosPromise<ApiAuthToken> {
             return localVarFp.createAuthToken(apiCreateAuthTokenRequest, options).then((request) => request(axios, basePath));
         },
         /**
@@ -2395,7 +3184,7 @@ export const AuthApiFactory = function (configuration?: Configuration, basePath?
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        deleteAuthToken(key: string, options?: any): AxiosPromise<void> {
+        deleteAuthToken(key: string, options?: RawAxiosRequestConfig): AxiosPromise<void> {
             return localVarFp.deleteAuthToken(key, options).then((request) => request(axios, basePath));
         },
         /**
@@ -2405,7 +3194,7 @@ export const AuthApiFactory = function (configuration?: Configuration, basePath?
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        editAuthToken(apiEditAuthTokenRequest: ApiEditAuthTokenRequest, options?: any): AxiosPromise<ApiAuthToken> {
+        editAuthToken(apiEditAuthTokenRequest: ApiEditAuthTokenRequest, options?: RawAxiosRequestConfig): AxiosPromise<ApiAuthToken> {
             return localVarFp.editAuthToken(apiEditAuthTokenRequest, options).then((request) => request(axios, basePath));
         },
         /**
@@ -2414,7 +3203,7 @@ export const AuthApiFactory = function (configuration?: Configuration, basePath?
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getAuthTokens(options?: any): AxiosPromise<Array<ApiAuthToken>> {
+        getAuthTokens(options?: RawAxiosRequestConfig): AxiosPromise<Array<ApiAuthToken>> {
             return localVarFp.getAuthTokens(options).then((request) => request(axios, basePath));
         },
     };
@@ -2872,7 +3661,7 @@ export const CashbackApiFactory = function (configuration?: Configuration, baseP
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        createCashback(apiCashbackCreateRequest: ApiCashbackCreateRequest, options?: any): AxiosPromise<ApiCashbackInfo> {
+        createCashback(apiCashbackCreateRequest: ApiCashbackCreateRequest, options?: RawAxiosRequestConfig): AxiosPromise<ApiCashbackInfo> {
             return localVarFp.createCashback(apiCashbackCreateRequest, options).then((request) => request(axios, basePath));
         },
         /**
@@ -2882,7 +3671,7 @@ export const CashbackApiFactory = function (configuration?: Configuration, baseP
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getCashbackInfo(id: number, options?: any): AxiosPromise<ApiCashbackInfo> {
+        getCashbackInfo(id: number, options?: RawAxiosRequestConfig): AxiosPromise<ApiCashbackInfo> {
             return localVarFp.getCashbackInfo(id, options).then((request) => request(axios, basePath));
         },
         /**
@@ -2896,7 +3685,7 @@ export const CashbackApiFactory = function (configuration?: Configuration, baseP
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getCashbackInfos(distributor?: string, token?: string, active?: boolean, size?: number, page?: number, options?: any): AxiosPromise<ApiCashbackInfoResponse> {
+        getCashbackInfos(distributor?: string, token?: string, active?: boolean, size?: number, page?: number, options?: RawAxiosRequestConfig): AxiosPromise<ApiCashbackInfoResponse> {
             return localVarFp.getCashbackInfos(distributor, token, active, size, page, options).then((request) => request(axios, basePath));
         },
         /**
@@ -2909,7 +3698,7 @@ export const CashbackApiFactory = function (configuration?: Configuration, baseP
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getUserCashbackInfo(address: string, xVerify: string, size?: number, page?: number, options?: any): AxiosPromise<Array<ApiUserCashbackInfo>> {
+        getUserCashbackInfo(address: string, xVerify: string, size?: number, page?: number, options?: RawAxiosRequestConfig): AxiosPromise<Array<ApiUserCashbackInfo>> {
             return localVarFp.getUserCashbackInfo(address, xVerify, size, page, options).then((request) => request(axios, basePath));
         },
         /**
@@ -2920,7 +3709,7 @@ export const CashbackApiFactory = function (configuration?: Configuration, baseP
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getUserCashbackInfoTotal(address: string, xVerify: string, options?: any): AxiosPromise<ApiUserCashbackInfoTotal> {
+        getUserCashbackInfoTotal(address: string, xVerify: string, options?: RawAxiosRequestConfig): AxiosPromise<ApiUserCashbackInfoTotal> {
             return localVarFp.getUserCashbackInfoTotal(address, xVerify, options).then((request) => request(axios, basePath));
         },
         /**
@@ -2931,7 +3720,7 @@ export const CashbackApiFactory = function (configuration?: Configuration, baseP
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        updateCashback(id: number, apiCashbackUpdateRequest: ApiCashbackUpdateRequest, options?: any): AxiosPromise<ApiCashbackInfo> {
+        updateCashback(id: number, apiCashbackUpdateRequest: ApiCashbackUpdateRequest, options?: RawAxiosRequestConfig): AxiosPromise<ApiCashbackInfo> {
             return localVarFp.updateCashback(id, apiCashbackUpdateRequest, options).then((request) => request(axios, basePath));
         },
     };
@@ -3346,7 +4135,7 @@ export const ClaimApiFactory = function (configuration?: Configuration, basePath
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        claimTokens(address: string, xVerify: string, type: ApiClaimingType, apiTokenClaimRequest: Array<ApiTokenClaimRequest>, options?: any): AxiosPromise<Array<ApiTokenClaimResponse>> {
+        claimTokens(address: string, xVerify: string, type: ApiClaimingType, apiTokenClaimRequest: Array<ApiTokenClaimRequest>, options?: RawAxiosRequestConfig): AxiosPromise<Array<ApiTokenClaimResponse>> {
             return localVarFp.claimTokens(address, xVerify, type, apiTokenClaimRequest, options).then((request) => request(axios, basePath));
         },
         /**
@@ -3360,7 +4149,7 @@ export const ClaimApiFactory = function (configuration?: Configuration, basePath
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getAccountClaimingState(address: string, xVerify: string, type: ApiClaimingType, size?: number, page?: number, options?: any): AxiosPromise<ApiClaimStateResponse> {
+        getAccountClaimingState(address: string, xVerify: string, type: ApiClaimingType, size?: number, page?: number, options?: RawAxiosRequestConfig): AxiosPromise<ApiClaimStateResponse> {
             return localVarFp.getAccountClaimingState(address, xVerify, type, size, page, options).then((request) => request(axios, basePath));
         },
         /**
@@ -3374,7 +4163,7 @@ export const ClaimApiFactory = function (configuration?: Configuration, basePath
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getClaimingStats(address: string, xVerify: string, type: ApiClaimingType, size?: number, page?: number, options?: any): AxiosPromise<ApiClaimingStats> {
+        getClaimingStats(address: string, xVerify: string, type: ApiClaimingType, size?: number, page?: number, options?: RawAxiosRequestConfig): AxiosPromise<ApiClaimingStats> {
             return localVarFp.getClaimingStats(address, xVerify, type, size, page, options).then((request) => request(axios, basePath));
         },
         /**
@@ -3384,7 +4173,7 @@ export const ClaimApiFactory = function (configuration?: Configuration, basePath
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getClaimingTransactionResult(queryId: Array<number>, options?: any): AxiosPromise<ApiTransactionStatus> {
+        getClaimingTransactionResult(queryId: Array<number>, options?: RawAxiosRequestConfig): AxiosPromise<ApiTransactionStatus> {
             return localVarFp.getClaimingTransactionResult(queryId, options).then((request) => request(axios, basePath));
         },
     };
@@ -3467,13 +4256,13 @@ export const ContestsApiAxiosParamCreator = function (configuration?: Configurat
     return {
         /**
          * Create new contest. For internal usage only
-         * @param {ApiContestInformation} apiContestInformation 
+         * @param {ApiContestInfo} apiContestInfo 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        createContest: async (apiContestInformation: ApiContestInformation, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'apiContestInformation' is not null or undefined
-            assertParamExists('createContest', 'apiContestInformation', apiContestInformation)
+        createContest: async (apiContestInfo: ApiContestInfo, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'apiContestInfo' is not null or undefined
+            assertParamExists('createContest', 'apiContestInfo', apiContestInfo)
             const localVarPath = `/v1/contests`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -3496,7 +4285,7 @@ export const ContestsApiAxiosParamCreator = function (configuration?: Configurat
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(apiContestInformation, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(apiContestInfo, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -3608,7 +4397,7 @@ export const ContestsApiAxiosParamCreator = function (configuration?: Configurat
             await setApiKeyToObject(localVarHeaderParameter, "X-Api-Key", configuration)
 
             if (xVerify != null) {
-                localVarHeaderParameter['x_verify'] = String(xVerify);
+                localVarHeaderParameter['x-verify'] = String(xVerify);
             }
 
 
@@ -3659,6 +4448,48 @@ export const ContestsApiAxiosParamCreator = function (configuration?: Configurat
                 options: localVarRequestOptions,
             };
         },
+        /**
+         * Update existing contest. For internal usage only
+         * @param {number} id 
+         * @param {ApiContestInfo} apiContestInfo 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        updateContest: async (id: number, apiContestInfo: ApiContestInfo, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('updateContest', 'id', id)
+            // verify required parameter 'apiContestInfo' is not null or undefined
+            assertParamExists('updateContest', 'apiContestInfo', apiContestInfo)
+            const localVarPath = `/v1/contests/{id}`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PATCH', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication ApiKey required
+            await setApiKeyToObject(localVarHeaderParameter, "X-Api-Key", configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(apiContestInfo, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
     }
 };
 
@@ -3671,12 +4502,12 @@ export const ContestsApiFp = function(configuration?: Configuration) {
     return {
         /**
          * Create new contest. For internal usage only
-         * @param {ApiContestInformation} apiContestInformation 
+         * @param {ApiContestInfo} apiContestInfo 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async createContest(apiContestInformation: ApiContestInformation, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ApiContestInformationResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.createContest(apiContestInformation, options);
+        async createContest(apiContestInfo: ApiContestInfo, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ApiContestInfoWithID>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.createContest(apiContestInfo, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['ContestsApi.createContest']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -3687,7 +4518,7 @@ export const ContestsApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getContest(id: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ApiContestInformationResponse>> {
+        async getContest(id: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ApiContestInfoWithID>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.getContest(id, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['ContestsApi.getContest']?.[localVarOperationServerIndex]?.url;
@@ -3725,10 +4556,23 @@ export const ContestsApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getContests(active?: boolean, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<ApiContestInformationResponse>>> {
+        async getContests(active?: boolean, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<ApiContestInfoWithID>>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.getContests(active, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['ContestsApi.getContests']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Update existing contest. For internal usage only
+         * @param {number} id 
+         * @param {ApiContestInfo} apiContestInfo 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async updateContest(id: number, apiContestInfo: ApiContestInfo, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ApiContestInfoWithID>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.updateContest(id, apiContestInfo, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ContestsApi.updateContest']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
     }
@@ -3743,12 +4587,12 @@ export const ContestsApiFactory = function (configuration?: Configuration, baseP
     return {
         /**
          * Create new contest. For internal usage only
-         * @param {ApiContestInformation} apiContestInformation 
+         * @param {ApiContestInfo} apiContestInfo 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        createContest(apiContestInformation: ApiContestInformation, options?: any): AxiosPromise<ApiContestInformationResponse> {
-            return localVarFp.createContest(apiContestInformation, options).then((request) => request(axios, basePath));
+        createContest(apiContestInfo: ApiContestInfo, options?: RawAxiosRequestConfig): AxiosPromise<ApiContestInfoWithID> {
+            return localVarFp.createContest(apiContestInfo, options).then((request) => request(axios, basePath));
         },
         /**
          * Get contest
@@ -3756,7 +4600,7 @@ export const ContestsApiFactory = function (configuration?: Configuration, baseP
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getContest(id: number, options?: any): AxiosPromise<ApiContestInformationResponse> {
+        getContest(id: number, options?: RawAxiosRequestConfig): AxiosPromise<ApiContestInfoWithID> {
             return localVarFp.getContest(id, options).then((request) => request(axios, basePath));
         },
         /**
@@ -3765,7 +4609,7 @@ export const ContestsApiFactory = function (configuration?: Configuration, baseP
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getContestTopUsersStats(id: number, options?: any): AxiosPromise<Array<ApiContestUserStats>> {
+        getContestTopUsersStats(id: number, options?: RawAxiosRequestConfig): AxiosPromise<Array<ApiContestUserStats>> {
             return localVarFp.getContestTopUsersStats(id, options).then((request) => request(axios, basePath));
         },
         /**
@@ -3776,7 +4620,7 @@ export const ContestsApiFactory = function (configuration?: Configuration, baseP
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getContestUserStats(id: number, address: string, xVerify: string, options?: any): AxiosPromise<ApiContestUserStats> {
+        getContestUserStats(id: number, address: string, xVerify: string, options?: RawAxiosRequestConfig): AxiosPromise<ApiContestUserStats> {
             return localVarFp.getContestUserStats(id, address, xVerify, options).then((request) => request(axios, basePath));
         },
         /**
@@ -3785,8 +4629,18 @@ export const ContestsApiFactory = function (configuration?: Configuration, baseP
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getContests(active?: boolean, options?: any): AxiosPromise<Array<ApiContestInformationResponse>> {
+        getContests(active?: boolean, options?: RawAxiosRequestConfig): AxiosPromise<Array<ApiContestInfoWithID>> {
             return localVarFp.getContests(active, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Update existing contest. For internal usage only
+         * @param {number} id 
+         * @param {ApiContestInfo} apiContestInfo 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        updateContest(id: number, apiContestInfo: ApiContestInfo, options?: RawAxiosRequestConfig): AxiosPromise<ApiContestInfoWithID> {
+            return localVarFp.updateContest(id, apiContestInfo, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -3800,13 +4654,13 @@ export const ContestsApiFactory = function (configuration?: Configuration, baseP
 export class ContestsApi extends BaseAPI {
     /**
      * Create new contest. For internal usage only
-     * @param {ApiContestInformation} apiContestInformation 
+     * @param {ApiContestInfo} apiContestInfo 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ContestsApi
      */
-    public createContest(apiContestInformation: ApiContestInformation, options?: RawAxiosRequestConfig) {
-        return ContestsApiFp(this.configuration).createContest(apiContestInformation, options).then((request) => request(this.axios, this.basePath));
+    public createContest(apiContestInfo: ApiContestInfo, options?: RawAxiosRequestConfig) {
+        return ContestsApiFp(this.configuration).createContest(apiContestInfo, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -3853,6 +4707,18 @@ export class ContestsApi extends BaseAPI {
      */
     public getContests(active?: boolean, options?: RawAxiosRequestConfig) {
         return ContestsApiFp(this.configuration).getContests(active, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Update existing contest. For internal usage only
+     * @param {number} id 
+     * @param {ApiContestInfo} apiContestInfo 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ContestsApi
+     */
+    public updateContest(id: number, apiContestInfo: ApiContestInfo, options?: RawAxiosRequestConfig) {
+        return ContestsApiFp(this.configuration).updateContest(id, apiContestInfo, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
@@ -4257,7 +5123,7 @@ export const EntityApiFactory = function (configuration?: Configuration, basePat
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getBlockchains(options?: any): AxiosPromise<Array<ApiBlockchain>> {
+        getBlockchains(options?: RawAxiosRequestConfig): AxiosPromise<Array<ApiBlockchain>> {
             return localVarFp.getBlockchains(options).then((request) => request(axios, basePath));
         },
         /**
@@ -4268,7 +5134,7 @@ export const EntityApiFactory = function (configuration?: Configuration, basePat
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getDex(blockchain: string, name: string, options?: any): AxiosPromise<ApiDex> {
+        getDex(blockchain: string, name: string, options?: RawAxiosRequestConfig): AxiosPromise<ApiDex> {
             return localVarFp.getDex(blockchain, name, options).then((request) => request(axios, basePath));
         },
         /**
@@ -4278,7 +5144,7 @@ export const EntityApiFactory = function (configuration?: Configuration, basePat
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getDexes(blockchain?: string, options?: any): AxiosPromise<Array<ApiDex>> {
+        getDexes(blockchain?: string, options?: RawAxiosRequestConfig): AxiosPromise<Array<ApiDex>> {
             return localVarFp.getDexes(blockchain, options).then((request) => request(axios, basePath));
         },
         /**
@@ -4289,7 +5155,7 @@ export const EntityApiFactory = function (configuration?: Configuration, basePat
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getPool(blockchain: string, address: string, options?: any): AxiosPromise<ApiPool> {
+        getPool(blockchain: string, address: string, options?: RawAxiosRequestConfig): AxiosPromise<ApiPool> {
             return localVarFp.getPool(blockchain, address, options).then((request) => request(axios, basePath));
         },
         /**
@@ -4300,7 +5166,7 @@ export const EntityApiFactory = function (configuration?: Configuration, basePat
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getToken(blockchain: string, address: string, options?: any): AxiosPromise<ApiToken> {
+        getToken(blockchain: string, address: string, options?: RawAxiosRequestConfig): AxiosPromise<ApiToken> {
             return localVarFp.getToken(blockchain, address, options).then((request) => request(axios, basePath));
         },
         /**
@@ -4310,7 +5176,7 @@ export const EntityApiFactory = function (configuration?: Configuration, basePat
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getTokens(listed?: boolean, options?: any): AxiosPromise<Array<ApiToken>> {
+        getTokens(listed?: boolean, options?: RawAxiosRequestConfig): AxiosPromise<Array<ApiToken>> {
             return localVarFp.getTokens(listed, options).then((request) => request(axios, basePath));
         },
         /**
@@ -4321,7 +5187,7 @@ export const EntityApiFactory = function (configuration?: Configuration, basePat
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getTokensBySymbol(blockchain: string, symbol: string, options?: any): AxiosPromise<Array<ApiToken>> {
+        getTokensBySymbol(blockchain: string, symbol: string, options?: RawAxiosRequestConfig): AxiosPromise<Array<ApiToken>> {
             return localVarFp.getTokensBySymbol(blockchain, symbol, options).then((request) => request(axios, basePath));
         },
     };
@@ -4514,7 +5380,7 @@ export const PartnershipApiFactory = function (configuration?: Configuration, ba
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getRawTransactionRecords(address: string, page?: number, options?: any): AxiosPromise<Array<ApiRawTransactionRecord>> {
+        getRawTransactionRecords(address: string, page?: number, options?: RawAxiosRequestConfig): AxiosPromise<Array<ApiRawTransactionRecord>> {
             return localVarFp.getRawTransactionRecords(address, page, options).then((request) => request(axios, basePath));
         },
     };
@@ -4839,7 +5705,7 @@ export const ProfileApiFactory = function (configuration?: Configuration, basePa
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getAccountSettings(address: string, xVerify: string, options?: any): AxiosPromise<{ [key: string]: any; }> {
+        getAccountSettings(address: string, xVerify: string, options?: RawAxiosRequestConfig): AxiosPromise<{ [key: string]: any; }> {
             return localVarFp.getAccountSettings(address, xVerify, options).then((request) => request(axios, basePath));
         },
         /**
@@ -4854,7 +5720,7 @@ export const ProfileApiFactory = function (configuration?: Configuration, basePa
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getHistoricalTransactions(address: string, xVerify: string, token?: string, token2?: string, size?: number, page?: number, options?: any): AxiosPromise<Array<ApiHistoricalTransaction>> {
+        getHistoricalTransactions(address: string, xVerify: string, token?: string, token2?: string, size?: number, page?: number, options?: RawAxiosRequestConfig): AxiosPromise<Array<ApiHistoricalTransaction>> {
             return localVarFp.getHistoricalTransactions(address, xVerify, token, token2, size, page, options).then((request) => request(axios, basePath));
         },
         /**
@@ -4866,7 +5732,7 @@ export const ProfileApiFactory = function (configuration?: Configuration, basePa
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        updateAccountSettings(address: string, xVerify: string, requestBody: { [key: string]: any; }, options?: any): AxiosPromise<void> {
+        updateAccountSettings(address: string, xVerify: string, requestBody: { [key: string]: any; }, options?: RawAxiosRequestConfig): AxiosPromise<void> {
             return localVarFp.updateAccountSettings(address, xVerify, requestBody, options).then((request) => request(axios, basePath));
         },
         /**
@@ -4877,7 +5743,7 @@ export const ProfileApiFactory = function (configuration?: Configuration, basePa
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        validateProof(address: string, apiProofValidationRequest: ApiProofValidationRequest, options?: any): AxiosPromise<void> {
+        validateProof(address: string, apiProofValidationRequest: ApiProofValidationRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
             return localVarFp.validateProof(address, apiProofValidationRequest, options).then((request) => request(axios, basePath));
         },
     };
@@ -5164,7 +6030,7 @@ export const ReferralApiAxiosParamCreator = function (configuration?: Configurat
                 baseOptions = configuration.baseOptions;
             }
 
-            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
+            const localVarRequestOptions = { method: 'PATCH', ...baseOptions, ...options};
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
@@ -5286,7 +6152,7 @@ export const ReferralApiFactory = function (configuration?: Configuration, baseP
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        bindReferral(address: string, referral: string, xVerify: string, options?: any): AxiosPromise<void> {
+        bindReferral(address: string, referral: string, xVerify: string, options?: RawAxiosRequestConfig): AxiosPromise<void> {
             return localVarFp.bindReferral(address, referral, xVerify, options).then((request) => request(axios, basePath));
         },
         /**
@@ -5297,7 +6163,7 @@ export const ReferralApiFactory = function (configuration?: Configuration, baseP
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getReferralInfo(address: string, xVerify: string, options?: any): AxiosPromise<ApiReferralAccountInfo> {
+        getReferralInfo(address: string, xVerify: string, options?: RawAxiosRequestConfig): AxiosPromise<ApiReferralAccountInfo> {
             return localVarFp.getReferralInfo(address, xVerify, options).then((request) => request(axios, basePath));
         },
         /**
@@ -5310,7 +6176,7 @@ export const ReferralApiFactory = function (configuration?: Configuration, baseP
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getReferralList(address: string, xVerify: string, size?: number, page?: number, options?: any): AxiosPromise<Array<ApiReferralInfo>> {
+        getReferralList(address: string, xVerify: string, size?: number, page?: number, options?: RawAxiosRequestConfig): AxiosPromise<Array<ApiReferralInfo>> {
             return localVarFp.getReferralList(address, xVerify, size, page, options).then((request) => request(axios, basePath));
         },
         /**
@@ -5320,7 +6186,7 @@ export const ReferralApiFactory = function (configuration?: Configuration, baseP
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        unbindReferral(address: string, options?: any): AxiosPromise<void> {
+        unbindReferral(address: string, options?: RawAxiosRequestConfig): AxiosPromise<void> {
             return localVarFp.unbindReferral(address, options).then((request) => request(axios, basePath));
         },
         /**
@@ -5331,7 +6197,7 @@ export const ReferralApiFactory = function (configuration?: Configuration, baseP
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        updateReferral(address: string, apiReferralAccountInfoUpdate: ApiReferralAccountInfoUpdate, options?: any): AxiosPromise<void> {
+        updateReferral(address: string, apiReferralAccountInfoUpdate: ApiReferralAccountInfoUpdate, options?: RawAxiosRequestConfig): AxiosPromise<void> {
             return localVarFp.updateReferral(address, apiReferralAccountInfoUpdate, options).then((request) => request(axios, basePath));
         },
     };
@@ -5579,8 +6445,49 @@ export const RoutingApiAxiosParamCreator = function (configuration?: Configurati
         /**
          * 
          * @summary Get route transactions execution result
+         * @param {number} routeId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getRouteResult: async (routeId: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'routeId' is not null or undefined
+            assertParamExists('getRouteResult', 'routeId', routeId)
+            const localVarPath = `/v2/route/result`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication ApiKey required
+            await setApiKeyToObject(localVarHeaderParameter, "X-Api-Key", configuration)
+
+            if (routeId !== undefined) {
+                localVarQueryParameter['route_id'] = routeId;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Get route transactions execution result
          * @param {number} queryId Actually it\&#39;s route_id, but saved old naming for back-compatibility
          * @param {*} [options] Override http request option.
+         * @deprecated
          * @throws {RequiredError}
          */
         getTransactionsResult: async (queryId: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
@@ -5681,8 +6588,22 @@ export const RoutingApiFp = function(configuration?: Configuration) {
         /**
          * 
          * @summary Get route transactions execution result
+         * @param {number} routeId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getRouteResult(routeId: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ApiRouteResult>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getRouteResult(routeId, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['RoutingApi.getRouteResult']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary Get route transactions execution result
          * @param {number} queryId Actually it\&#39;s route_id, but saved old naming for back-compatibility
          * @param {*} [options] Override http request option.
+         * @deprecated
          * @throws {RequiredError}
          */
         async getTransactionsResult(queryId: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<ApiTransactionResult>>> {
@@ -5708,7 +6629,7 @@ export const RoutingApiFactory = function (configuration?: Configuration, basePa
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        buildRoute(apiRouteRequest: ApiRouteRequest, options?: any): AxiosPromise<ApiRoute> {
+        buildRoute(apiRouteRequest: ApiRouteRequest, options?: RawAxiosRequestConfig): AxiosPromise<ApiRoute> {
             return localVarFp.buildRoute(apiRouteRequest, options).then((request) => request(axios, basePath));
         },
         /**
@@ -5718,7 +6639,7 @@ export const RoutingApiFactory = function (configuration?: Configuration, basePa
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        buildTonStakeTransaction(apiTonStakingTransactionRequest: ApiTonStakingTransactionRequest, options?: any): AxiosPromise<ApiTransactionBoc> {
+        buildTonStakeTransaction(apiTonStakingTransactionRequest: ApiTonStakingTransactionRequest, options?: RawAxiosRequestConfig): AxiosPromise<ApiTransactionBoc> {
             return localVarFp.buildTonStakeTransaction(apiTonStakingTransactionRequest, options).then((request) => request(axios, basePath));
         },
         /**
@@ -5728,7 +6649,7 @@ export const RoutingApiFactory = function (configuration?: Configuration, basePa
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        buildTonUnstakeTransaction(apiTonStakingTransactionRequest: ApiTonStakingTransactionRequest, options?: any): AxiosPromise<ApiTransactionBoc> {
+        buildTonUnstakeTransaction(apiTonStakingTransactionRequest: ApiTonStakingTransactionRequest, options?: RawAxiosRequestConfig): AxiosPromise<ApiTransactionBoc> {
             return localVarFp.buildTonUnstakeTransaction(apiTonStakingTransactionRequest, options).then((request) => request(axios, basePath));
         },
         /**
@@ -5738,17 +6659,28 @@ export const RoutingApiFactory = function (configuration?: Configuration, basePa
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        buildTransactionsV2(apiTransactionsRequest: ApiTransactionsRequest, options?: any): AxiosPromise<ApiTransactionsResponse> {
+        buildTransactionsV2(apiTransactionsRequest: ApiTransactionsRequest, options?: RawAxiosRequestConfig): AxiosPromise<ApiTransactionsResponse> {
             return localVarFp.buildTransactionsV2(apiTransactionsRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Get route transactions execution result
+         * @param {number} routeId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getRouteResult(routeId: number, options?: RawAxiosRequestConfig): AxiosPromise<ApiRouteResult> {
+            return localVarFp.getRouteResult(routeId, options).then((request) => request(axios, basePath));
         },
         /**
          * 
          * @summary Get route transactions execution result
          * @param {number} queryId Actually it\&#39;s route_id, but saved old naming for back-compatibility
          * @param {*} [options] Override http request option.
+         * @deprecated
          * @throws {RequiredError}
          */
-        getTransactionsResult(queryId: number, options?: any): AxiosPromise<Array<ApiTransactionResult>> {
+        getTransactionsResult(queryId: number, options?: RawAxiosRequestConfig): AxiosPromise<Array<ApiTransactionResult>> {
             return localVarFp.getTransactionsResult(queryId, options).then((request) => request(axios, basePath));
         },
     };
@@ -5812,13 +6744,1882 @@ export class RoutingApi extends BaseAPI {
     /**
      * 
      * @summary Get route transactions execution result
+     * @param {number} routeId 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof RoutingApi
+     */
+    public getRouteResult(routeId: number, options?: RawAxiosRequestConfig) {
+        return RoutingApiFp(this.configuration).getRouteResult(routeId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Get route transactions execution result
      * @param {number} queryId Actually it\&#39;s route_id, but saved old naming for back-compatibility
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      * @memberof RoutingApi
      */
     public getTransactionsResult(queryId: number, options?: RawAxiosRequestConfig) {
         return RoutingApiFp(this.configuration).getTransactionsResult(queryId, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+
+/**
+ * StakingApi - axios parameter creator
+ * @export
+ */
+export const StakingApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @summary Build transaction to close position and withdraw all money
+         * @param {string} masterAddress 
+         * @param {string} address 
+         * @param {number} id 
+         * @param {string} xVerify TON proof for the given address
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        closeStakingPosition: async (masterAddress: string, address: string, id: number, xVerify: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'masterAddress' is not null or undefined
+            assertParamExists('closeStakingPosition', 'masterAddress', masterAddress)
+            // verify required parameter 'address' is not null or undefined
+            assertParamExists('closeStakingPosition', 'address', address)
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('closeStakingPosition', 'id', id)
+            // verify required parameter 'xVerify' is not null or undefined
+            assertParamExists('closeStakingPosition', 'xVerify', xVerify)
+            const localVarPath = `/v2/staking/{master_address}/positions/{address}/{id}`
+                .replace(`{${"master_address"}}`, encodeURIComponent(String(masterAddress)))
+                .replace(`{${"address"}}`, encodeURIComponent(String(address)))
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication ApiKey required
+            await setApiKeyToObject(localVarHeaderParameter, "X-Api-Key", configuration)
+
+            if (xVerify != null) {
+                localVarHeaderParameter['x-verify'] = String(xVerify);
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Build transaction to create new staking position
+         * @param {string} masterAddress 
+         * @param {string} address 
+         * @param {string} xVerify TON proof for the given address
+         * @param {ApiCreateStakeRequest} apiCreateStakeRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        createStakingPosition: async (masterAddress: string, address: string, xVerify: string, apiCreateStakeRequest: ApiCreateStakeRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'masterAddress' is not null or undefined
+            assertParamExists('createStakingPosition', 'masterAddress', masterAddress)
+            // verify required parameter 'address' is not null or undefined
+            assertParamExists('createStakingPosition', 'address', address)
+            // verify required parameter 'xVerify' is not null or undefined
+            assertParamExists('createStakingPosition', 'xVerify', xVerify)
+            // verify required parameter 'apiCreateStakeRequest' is not null or undefined
+            assertParamExists('createStakingPosition', 'apiCreateStakeRequest', apiCreateStakeRequest)
+            const localVarPath = `/v2/staking/{master_address}/positions/{address}`
+                .replace(`{${"master_address"}}`, encodeURIComponent(String(masterAddress)))
+                .replace(`{${"address"}}`, encodeURIComponent(String(address)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication ApiKey required
+            await setApiKeyToObject(localVarHeaderParameter, "X-Api-Key", configuration)
+
+            if (xVerify != null) {
+                localVarHeaderParameter['x-verify'] = String(xVerify);
+            }
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(apiCreateStakeRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Build transaction to extend existing position
+         * @param {string} masterAddress 
+         * @param {string} address 
+         * @param {number} id 
+         * @param {string} xVerify TON proof for the given address
+         * @param {ApiExtendStakeRequest} apiExtendStakeRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        extendStakingPosition: async (masterAddress: string, address: string, id: number, xVerify: string, apiExtendStakeRequest: ApiExtendStakeRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'masterAddress' is not null or undefined
+            assertParamExists('extendStakingPosition', 'masterAddress', masterAddress)
+            // verify required parameter 'address' is not null or undefined
+            assertParamExists('extendStakingPosition', 'address', address)
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('extendStakingPosition', 'id', id)
+            // verify required parameter 'xVerify' is not null or undefined
+            assertParamExists('extendStakingPosition', 'xVerify', xVerify)
+            // verify required parameter 'apiExtendStakeRequest' is not null or undefined
+            assertParamExists('extendStakingPosition', 'apiExtendStakeRequest', apiExtendStakeRequest)
+            const localVarPath = `/v2/staking/{master_address}/positions/{address}/{id}`
+                .replace(`{${"master_address"}}`, encodeURIComponent(String(masterAddress)))
+                .replace(`{${"address"}}`, encodeURIComponent(String(address)))
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication ApiKey required
+            await setApiKeyToObject(localVarHeaderParameter, "X-Api-Key", configuration)
+
+            if (xVerify != null) {
+                localVarHeaderParameter['x-verify'] = String(xVerify);
+            }
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(apiExtendStakeRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Get all stakings
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getAllStakings: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/v2/staking/list`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication ApiKey required
+            await setApiKeyToObject(localVarHeaderParameter, "X-Api-Key", configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Get user\'s staking points for CES
+         * @param {string} address 
+         * @param {number} [from] 
+         * @param {*} [options] Override http request option.
+         * @deprecated
+         * @throws {RequiredError}
+         */
+        getCesPointsForUser: async (address: string, from?: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'address' is not null or undefined
+            assertParamExists('getCesPointsForUser', 'address', address)
+            const localVarPath = `/v1/staking/{address}/points`
+                .replace(`{${"address"}}`, encodeURIComponent(String(address)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication ApiKey required
+            await setApiKeyToObject(localVarHeaderParameter, "X-Api-Key", configuration)
+
+            if (from !== undefined) {
+                localVarQueryParameter['from'] = from;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Get aggregated information about CES staking
+         * @param {*} [options] Override http request option.
+         * @deprecated
+         * @throws {RequiredError}
+         */
+        getCesStakingGlobalInfo: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/v1/staking`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication ApiKey required
+            await setApiKeyToObject(localVarHeaderParameter, "X-Api-Key", configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Get user\'s balances of staked tokens in CES staking
+         * @param {string} address 
+         * @param {string} xVerify TON proof for the given address.
+         * @param {*} [options] Override http request option.
+         * @deprecated
+         * @throws {RequiredError}
+         */
+        getCesStakingTokenBalances: async (address: string, xVerify: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'address' is not null or undefined
+            assertParamExists('getCesStakingTokenBalances', 'address', address)
+            // verify required parameter 'xVerify' is not null or undefined
+            assertParamExists('getCesStakingTokenBalances', 'xVerify', xVerify)
+            const localVarPath = `/v1/staking/{address}/balances`
+                .replace(`{${"address"}}`, encodeURIComponent(String(address)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication ApiKey required
+            await setApiKeyToObject(localVarHeaderParameter, "X-Api-Key", configuration)
+
+            if (xVerify != null) {
+                localVarHeaderParameter['x-verify'] = String(xVerify);
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Get aggregated information about CES staking for specific user
+         * @param {string} address 
+         * @param {string} xVerify TON proof for the given address.
+         * @param {*} [options] Override http request option.
+         * @deprecated
+         * @throws {RequiredError}
+         */
+        getCesStakingUserInfo: async (address: string, xVerify: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'address' is not null or undefined
+            assertParamExists('getCesStakingUserInfo', 'address', address)
+            // verify required parameter 'xVerify' is not null or undefined
+            assertParamExists('getCesStakingUserInfo', 'xVerify', xVerify)
+            const localVarPath = `/v1/staking/{address}`
+                .replace(`{${"address"}}`, encodeURIComponent(String(address)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication ApiKey required
+            await setApiKeyToObject(localVarHeaderParameter, "X-Api-Key", configuration)
+
+            if (xVerify != null) {
+                localVarHeaderParameter['x-verify'] = String(xVerify);
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Get user\'s staking points
+         * @param {string} masterAddress 
+         * @param {string} address 
+         * @param {number} [from] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getPointsForUser: async (masterAddress: string, address: string, from?: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'masterAddress' is not null or undefined
+            assertParamExists('getPointsForUser', 'masterAddress', masterAddress)
+            // verify required parameter 'address' is not null or undefined
+            assertParamExists('getPointsForUser', 'address', address)
+            const localVarPath = `/v2/staking/{master_address}/{address}/points`
+                .replace(`{${"master_address"}}`, encodeURIComponent(String(masterAddress)))
+                .replace(`{${"address"}}`, encodeURIComponent(String(address)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication ApiKey required
+            await setApiKeyToObject(localVarHeaderParameter, "X-Api-Key", configuration)
+
+            if (from !== undefined) {
+                localVarQueryParameter['from'] = from;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Get aggregated information about staking
+         * @param {string} masterAddress 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getStakingGlobalInfo: async (masterAddress: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'masterAddress' is not null or undefined
+            assertParamExists('getStakingGlobalInfo', 'masterAddress', masterAddress)
+            const localVarPath = `/v2/staking/{master_address}`
+                .replace(`{${"master_address"}}`, encodeURIComponent(String(masterAddress)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication ApiKey required
+            await setApiKeyToObject(localVarHeaderParameter, "X-Api-Key", configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Get user\'s balances of staked tokens
+         * @param {string} masterAddress 
+         * @param {string} address 
+         * @param {string} xVerify TON proof for the given address.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getStakingTokenBalances: async (masterAddress: string, address: string, xVerify: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'masterAddress' is not null or undefined
+            assertParamExists('getStakingTokenBalances', 'masterAddress', masterAddress)
+            // verify required parameter 'address' is not null or undefined
+            assertParamExists('getStakingTokenBalances', 'address', address)
+            // verify required parameter 'xVerify' is not null or undefined
+            assertParamExists('getStakingTokenBalances', 'xVerify', xVerify)
+            const localVarPath = `/v2/staking/{master_address}/{address}/balances`
+                .replace(`{${"master_address"}}`, encodeURIComponent(String(masterAddress)))
+                .replace(`{${"address"}}`, encodeURIComponent(String(address)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication ApiKey required
+            await setApiKeyToObject(localVarHeaderParameter, "X-Api-Key", configuration)
+
+            if (xVerify != null) {
+                localVarHeaderParameter['x-verify'] = String(xVerify);
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Get staking transaction execution result
+         * @param {number} queryId Public query id to track staking process
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getStakingTransactionResult: async (queryId: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'queryId' is not null or undefined
+            assertParamExists('getStakingTransactionResult', 'queryId', queryId)
+            const localVarPath = `/v2/staking/result`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication ApiKey required
+            await setApiKeyToObject(localVarHeaderParameter, "X-Api-Key", configuration)
+
+            if (queryId !== undefined) {
+                localVarQueryParameter['query_id'] = queryId;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Get aggregated information about staking for specific user
+         * @param {string} masterAddress 
+         * @param {string} address 
+         * @param {string} xVerify TON proof for the given address.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getStakingUserInfo: async (masterAddress: string, address: string, xVerify: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'masterAddress' is not null or undefined
+            assertParamExists('getStakingUserInfo', 'masterAddress', masterAddress)
+            // verify required parameter 'address' is not null or undefined
+            assertParamExists('getStakingUserInfo', 'address', address)
+            // verify required parameter 'xVerify' is not null or undefined
+            assertParamExists('getStakingUserInfo', 'xVerify', xVerify)
+            const localVarPath = `/v2/staking/{master_address}/{address}`
+                .replace(`{${"master_address"}}`, encodeURIComponent(String(masterAddress)))
+                .replace(`{${"address"}}`, encodeURIComponent(String(address)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication ApiKey required
+            await setApiKeyToObject(localVarHeaderParameter, "X-Api-Key", configuration)
+
+            if (xVerify != null) {
+                localVarHeaderParameter['x-verify'] = String(xVerify);
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * StakingApi - functional programming interface
+ * @export
+ */
+export const StakingApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = StakingApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @summary Build transaction to close position and withdraw all money
+         * @param {string} masterAddress 
+         * @param {string} address 
+         * @param {number} id 
+         * @param {string} xVerify TON proof for the given address
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async closeStakingPosition(masterAddress: string, address: string, id: number, xVerify: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ApiTokenClaimResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.closeStakingPosition(masterAddress, address, id, xVerify, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['StakingApi.closeStakingPosition']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary Build transaction to create new staking position
+         * @param {string} masterAddress 
+         * @param {string} address 
+         * @param {string} xVerify TON proof for the given address
+         * @param {ApiCreateStakeRequest} apiCreateStakeRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async createStakingPosition(masterAddress: string, address: string, xVerify: string, apiCreateStakeRequest: ApiCreateStakeRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ApiTokenClaimResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.createStakingPosition(masterAddress, address, xVerify, apiCreateStakeRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['StakingApi.createStakingPosition']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary Build transaction to extend existing position
+         * @param {string} masterAddress 
+         * @param {string} address 
+         * @param {number} id 
+         * @param {string} xVerify TON proof for the given address
+         * @param {ApiExtendStakeRequest} apiExtendStakeRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async extendStakingPosition(masterAddress: string, address: string, id: number, xVerify: string, apiExtendStakeRequest: ApiExtendStakeRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ApiTokenClaimResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.extendStakingPosition(masterAddress, address, id, xVerify, apiExtendStakeRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['StakingApi.extendStakingPosition']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary Get all stakings
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getAllStakings(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<ApiStakingInfo>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getAllStakings(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['StakingApi.getAllStakings']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary Get user\'s staking points for CES
+         * @param {string} address 
+         * @param {number} [from] 
+         * @param {*} [options] Override http request option.
+         * @deprecated
+         * @throws {RequiredError}
+         */
+        async getCesPointsForUser(address: string, from?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ApiUserPoints>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getCesPointsForUser(address, from, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['StakingApi.getCesPointsForUser']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary Get aggregated information about CES staking
+         * @param {*} [options] Override http request option.
+         * @deprecated
+         * @throws {RequiredError}
+         */
+        async getCesStakingGlobalInfo(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ApiStakingGlobalInfo>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getCesStakingGlobalInfo(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['StakingApi.getCesStakingGlobalInfo']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary Get user\'s balances of staked tokens in CES staking
+         * @param {string} address 
+         * @param {string} xVerify TON proof for the given address.
+         * @param {*} [options] Override http request option.
+         * @deprecated
+         * @throws {RequiredError}
+         */
+        async getCesStakingTokenBalances(address: string, xVerify: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<ApiUserStakeTokenInfo>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getCesStakingTokenBalances(address, xVerify, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['StakingApi.getCesStakingTokenBalances']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary Get aggregated information about CES staking for specific user
+         * @param {string} address 
+         * @param {string} xVerify TON proof for the given address.
+         * @param {*} [options] Override http request option.
+         * @deprecated
+         * @throws {RequiredError}
+         */
+        async getCesStakingUserInfo(address: string, xVerify: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ApiStakingUserInfo>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getCesStakingUserInfo(address, xVerify, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['StakingApi.getCesStakingUserInfo']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary Get user\'s staking points
+         * @param {string} masterAddress 
+         * @param {string} address 
+         * @param {number} [from] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getPointsForUser(masterAddress: string, address: string, from?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ApiUserPoints>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getPointsForUser(masterAddress, address, from, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['StakingApi.getPointsForUser']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary Get aggregated information about staking
+         * @param {string} masterAddress 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getStakingGlobalInfo(masterAddress: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ApiStakingGlobalInfo>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getStakingGlobalInfo(masterAddress, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['StakingApi.getStakingGlobalInfo']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary Get user\'s balances of staked tokens
+         * @param {string} masterAddress 
+         * @param {string} address 
+         * @param {string} xVerify TON proof for the given address.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getStakingTokenBalances(masterAddress: string, address: string, xVerify: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<ApiUserStakeTokenInfo>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getStakingTokenBalances(masterAddress, address, xVerify, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['StakingApi.getStakingTokenBalances']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary Get staking transaction execution result
+         * @param {number} queryId Public query id to track staking process
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getStakingTransactionResult(queryId: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ApiTransactionStatus>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getStakingTransactionResult(queryId, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['StakingApi.getStakingTransactionResult']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary Get aggregated information about staking for specific user
+         * @param {string} masterAddress 
+         * @param {string} address 
+         * @param {string} xVerify TON proof for the given address.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getStakingUserInfo(masterAddress: string, address: string, xVerify: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ApiStakingUserInfo>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getStakingUserInfo(masterAddress, address, xVerify, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['StakingApi.getStakingUserInfo']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+    }
+};
+
+/**
+ * StakingApi - factory interface
+ * @export
+ */
+export const StakingApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = StakingApiFp(configuration)
+    return {
+        /**
+         * 
+         * @summary Build transaction to close position and withdraw all money
+         * @param {string} masterAddress 
+         * @param {string} address 
+         * @param {number} id 
+         * @param {string} xVerify TON proof for the given address
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        closeStakingPosition(masterAddress: string, address: string, id: number, xVerify: string, options?: RawAxiosRequestConfig): AxiosPromise<ApiTokenClaimResponse> {
+            return localVarFp.closeStakingPosition(masterAddress, address, id, xVerify, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Build transaction to create new staking position
+         * @param {string} masterAddress 
+         * @param {string} address 
+         * @param {string} xVerify TON proof for the given address
+         * @param {ApiCreateStakeRequest} apiCreateStakeRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        createStakingPosition(masterAddress: string, address: string, xVerify: string, apiCreateStakeRequest: ApiCreateStakeRequest, options?: RawAxiosRequestConfig): AxiosPromise<ApiTokenClaimResponse> {
+            return localVarFp.createStakingPosition(masterAddress, address, xVerify, apiCreateStakeRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Build transaction to extend existing position
+         * @param {string} masterAddress 
+         * @param {string} address 
+         * @param {number} id 
+         * @param {string} xVerify TON proof for the given address
+         * @param {ApiExtendStakeRequest} apiExtendStakeRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        extendStakingPosition(masterAddress: string, address: string, id: number, xVerify: string, apiExtendStakeRequest: ApiExtendStakeRequest, options?: RawAxiosRequestConfig): AxiosPromise<ApiTokenClaimResponse> {
+            return localVarFp.extendStakingPosition(masterAddress, address, id, xVerify, apiExtendStakeRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Get all stakings
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getAllStakings(options?: RawAxiosRequestConfig): AxiosPromise<Array<ApiStakingInfo>> {
+            return localVarFp.getAllStakings(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Get user\'s staking points for CES
+         * @param {string} address 
+         * @param {number} [from] 
+         * @param {*} [options] Override http request option.
+         * @deprecated
+         * @throws {RequiredError}
+         */
+        getCesPointsForUser(address: string, from?: number, options?: RawAxiosRequestConfig): AxiosPromise<ApiUserPoints> {
+            return localVarFp.getCesPointsForUser(address, from, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Get aggregated information about CES staking
+         * @param {*} [options] Override http request option.
+         * @deprecated
+         * @throws {RequiredError}
+         */
+        getCesStakingGlobalInfo(options?: RawAxiosRequestConfig): AxiosPromise<ApiStakingGlobalInfo> {
+            return localVarFp.getCesStakingGlobalInfo(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Get user\'s balances of staked tokens in CES staking
+         * @param {string} address 
+         * @param {string} xVerify TON proof for the given address.
+         * @param {*} [options] Override http request option.
+         * @deprecated
+         * @throws {RequiredError}
+         */
+        getCesStakingTokenBalances(address: string, xVerify: string, options?: RawAxiosRequestConfig): AxiosPromise<Array<ApiUserStakeTokenInfo>> {
+            return localVarFp.getCesStakingTokenBalances(address, xVerify, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Get aggregated information about CES staking for specific user
+         * @param {string} address 
+         * @param {string} xVerify TON proof for the given address.
+         * @param {*} [options] Override http request option.
+         * @deprecated
+         * @throws {RequiredError}
+         */
+        getCesStakingUserInfo(address: string, xVerify: string, options?: RawAxiosRequestConfig): AxiosPromise<ApiStakingUserInfo> {
+            return localVarFp.getCesStakingUserInfo(address, xVerify, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Get user\'s staking points
+         * @param {string} masterAddress 
+         * @param {string} address 
+         * @param {number} [from] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getPointsForUser(masterAddress: string, address: string, from?: number, options?: RawAxiosRequestConfig): AxiosPromise<ApiUserPoints> {
+            return localVarFp.getPointsForUser(masterAddress, address, from, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Get aggregated information about staking
+         * @param {string} masterAddress 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getStakingGlobalInfo(masterAddress: string, options?: RawAxiosRequestConfig): AxiosPromise<ApiStakingGlobalInfo> {
+            return localVarFp.getStakingGlobalInfo(masterAddress, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Get user\'s balances of staked tokens
+         * @param {string} masterAddress 
+         * @param {string} address 
+         * @param {string} xVerify TON proof for the given address.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getStakingTokenBalances(masterAddress: string, address: string, xVerify: string, options?: RawAxiosRequestConfig): AxiosPromise<Array<ApiUserStakeTokenInfo>> {
+            return localVarFp.getStakingTokenBalances(masterAddress, address, xVerify, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Get staking transaction execution result
+         * @param {number} queryId Public query id to track staking process
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getStakingTransactionResult(queryId: number, options?: RawAxiosRequestConfig): AxiosPromise<ApiTransactionStatus> {
+            return localVarFp.getStakingTransactionResult(queryId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Get aggregated information about staking for specific user
+         * @param {string} masterAddress 
+         * @param {string} address 
+         * @param {string} xVerify TON proof for the given address.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getStakingUserInfo(masterAddress: string, address: string, xVerify: string, options?: RawAxiosRequestConfig): AxiosPromise<ApiStakingUserInfo> {
+            return localVarFp.getStakingUserInfo(masterAddress, address, xVerify, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * StakingApi - object-oriented interface
+ * @export
+ * @class StakingApi
+ * @extends {BaseAPI}
+ */
+export class StakingApi extends BaseAPI {
+    /**
+     * 
+     * @summary Build transaction to close position and withdraw all money
+     * @param {string} masterAddress 
+     * @param {string} address 
+     * @param {number} id 
+     * @param {string} xVerify TON proof for the given address
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof StakingApi
+     */
+    public closeStakingPosition(masterAddress: string, address: string, id: number, xVerify: string, options?: RawAxiosRequestConfig) {
+        return StakingApiFp(this.configuration).closeStakingPosition(masterAddress, address, id, xVerify, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Build transaction to create new staking position
+     * @param {string} masterAddress 
+     * @param {string} address 
+     * @param {string} xVerify TON proof for the given address
+     * @param {ApiCreateStakeRequest} apiCreateStakeRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof StakingApi
+     */
+    public createStakingPosition(masterAddress: string, address: string, xVerify: string, apiCreateStakeRequest: ApiCreateStakeRequest, options?: RawAxiosRequestConfig) {
+        return StakingApiFp(this.configuration).createStakingPosition(masterAddress, address, xVerify, apiCreateStakeRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Build transaction to extend existing position
+     * @param {string} masterAddress 
+     * @param {string} address 
+     * @param {number} id 
+     * @param {string} xVerify TON proof for the given address
+     * @param {ApiExtendStakeRequest} apiExtendStakeRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof StakingApi
+     */
+    public extendStakingPosition(masterAddress: string, address: string, id: number, xVerify: string, apiExtendStakeRequest: ApiExtendStakeRequest, options?: RawAxiosRequestConfig) {
+        return StakingApiFp(this.configuration).extendStakingPosition(masterAddress, address, id, xVerify, apiExtendStakeRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Get all stakings
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof StakingApi
+     */
+    public getAllStakings(options?: RawAxiosRequestConfig) {
+        return StakingApiFp(this.configuration).getAllStakings(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Get user\'s staking points for CES
+     * @param {string} address 
+     * @param {number} [from] 
+     * @param {*} [options] Override http request option.
+     * @deprecated
+     * @throws {RequiredError}
+     * @memberof StakingApi
+     */
+    public getCesPointsForUser(address: string, from?: number, options?: RawAxiosRequestConfig) {
+        return StakingApiFp(this.configuration).getCesPointsForUser(address, from, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Get aggregated information about CES staking
+     * @param {*} [options] Override http request option.
+     * @deprecated
+     * @throws {RequiredError}
+     * @memberof StakingApi
+     */
+    public getCesStakingGlobalInfo(options?: RawAxiosRequestConfig) {
+        return StakingApiFp(this.configuration).getCesStakingGlobalInfo(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Get user\'s balances of staked tokens in CES staking
+     * @param {string} address 
+     * @param {string} xVerify TON proof for the given address.
+     * @param {*} [options] Override http request option.
+     * @deprecated
+     * @throws {RequiredError}
+     * @memberof StakingApi
+     */
+    public getCesStakingTokenBalances(address: string, xVerify: string, options?: RawAxiosRequestConfig) {
+        return StakingApiFp(this.configuration).getCesStakingTokenBalances(address, xVerify, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Get aggregated information about CES staking for specific user
+     * @param {string} address 
+     * @param {string} xVerify TON proof for the given address.
+     * @param {*} [options] Override http request option.
+     * @deprecated
+     * @throws {RequiredError}
+     * @memberof StakingApi
+     */
+    public getCesStakingUserInfo(address: string, xVerify: string, options?: RawAxiosRequestConfig) {
+        return StakingApiFp(this.configuration).getCesStakingUserInfo(address, xVerify, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Get user\'s staking points
+     * @param {string} masterAddress 
+     * @param {string} address 
+     * @param {number} [from] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof StakingApi
+     */
+    public getPointsForUser(masterAddress: string, address: string, from?: number, options?: RawAxiosRequestConfig) {
+        return StakingApiFp(this.configuration).getPointsForUser(masterAddress, address, from, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Get aggregated information about staking
+     * @param {string} masterAddress 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof StakingApi
+     */
+    public getStakingGlobalInfo(masterAddress: string, options?: RawAxiosRequestConfig) {
+        return StakingApiFp(this.configuration).getStakingGlobalInfo(masterAddress, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Get user\'s balances of staked tokens
+     * @param {string} masterAddress 
+     * @param {string} address 
+     * @param {string} xVerify TON proof for the given address.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof StakingApi
+     */
+    public getStakingTokenBalances(masterAddress: string, address: string, xVerify: string, options?: RawAxiosRequestConfig) {
+        return StakingApiFp(this.configuration).getStakingTokenBalances(masterAddress, address, xVerify, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Get staking transaction execution result
+     * @param {number} queryId Public query id to track staking process
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof StakingApi
+     */
+    public getStakingTransactionResult(queryId: number, options?: RawAxiosRequestConfig) {
+        return StakingApiFp(this.configuration).getStakingTransactionResult(queryId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Get aggregated information about staking for specific user
+     * @param {string} masterAddress 
+     * @param {string} address 
+     * @param {string} xVerify TON proof for the given address.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof StakingApi
+     */
+    public getStakingUserInfo(masterAddress: string, address: string, xVerify: string, options?: RawAxiosRequestConfig) {
+        return StakingApiFp(this.configuration).getStakingUserInfo(masterAddress, address, xVerify, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+
+/**
+ * StatisticsApi - axios parameter creator
+ * @export
+ */
+export const StatisticsApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @summary Get generic statistic of dex aggregation.
+         * @param {number} from 
+         * @param {number} to 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getGenericStats: async (from: number, to: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'from' is not null or undefined
+            assertParamExists('getGenericStats', 'from', from)
+            // verify required parameter 'to' is not null or undefined
+            assertParamExists('getGenericStats', 'to', to)
+            const localVarPath = `/v1/statistics/generic`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication ApiKey required
+            await setApiKeyToObject(localVarHeaderParameter, "X-Api-Key", configuration)
+
+            if (from !== undefined) {
+                localVarQueryParameter['from'] = from;
+            }
+
+            if (to !== undefined) {
+                localVarQueryParameter['to'] = to;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * StatisticsApi - functional programming interface
+ * @export
+ */
+export const StatisticsApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = StatisticsApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @summary Get generic statistic of dex aggregation.
+         * @param {number} from 
+         * @param {number} to 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getGenericStats(from: number, to: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ApiTxStats>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getGenericStats(from, to, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['StatisticsApi.getGenericStats']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+    }
+};
+
+/**
+ * StatisticsApi - factory interface
+ * @export
+ */
+export const StatisticsApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = StatisticsApiFp(configuration)
+    return {
+        /**
+         * 
+         * @summary Get generic statistic of dex aggregation.
+         * @param {number} from 
+         * @param {number} to 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getGenericStats(from: number, to: number, options?: RawAxiosRequestConfig): AxiosPromise<ApiTxStats> {
+            return localVarFp.getGenericStats(from, to, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * StatisticsApi - object-oriented interface
+ * @export
+ * @class StatisticsApi
+ * @extends {BaseAPI}
+ */
+export class StatisticsApi extends BaseAPI {
+    /**
+     * 
+     * @summary Get generic statistic of dex aggregation.
+     * @param {number} from 
+     * @param {number} to 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof StatisticsApi
+     */
+    public getGenericStats(from: number, to: number, options?: RawAxiosRequestConfig) {
+        return StatisticsApiFp(this.configuration).getGenericStats(from, to, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+
+/**
+ * StrategiesApi - axios parameter creator
+ * @export
+ */
+export const StrategiesApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @summary Check whether strategies wallet exists for given account address.
+         * @param {string} address 
+         * @param {string} xVerify 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        doesStrategyWalletExist: async (address: string, xVerify: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'address' is not null or undefined
+            assertParamExists('doesStrategyWalletExist', 'address', address)
+            // verify required parameter 'xVerify' is not null or undefined
+            assertParamExists('doesStrategyWalletExist', 'xVerify', xVerify)
+            const localVarPath = `/v1/strategies/{address}/wallet`
+                .replace(`{${"address"}}`, encodeURIComponent(String(address)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication ApiKey required
+            await setApiKeyToObject(localVarHeaderParameter, "X-Api-Key", configuration)
+
+            if (xVerify != null) {
+                localVarHeaderParameter['x-verify'] = String(xVerify);
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Get strategy order
+         * @param {string} address 
+         * @param {string} xVerify 
+         * @param {number} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getStrategyOrder: async (address: string, xVerify: string, id: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'address' is not null or undefined
+            assertParamExists('getStrategyOrder', 'address', address)
+            // verify required parameter 'xVerify' is not null or undefined
+            assertParamExists('getStrategyOrder', 'xVerify', xVerify)
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('getStrategyOrder', 'id', id)
+            const localVarPath = `/v1/strategies/{address}/order`
+                .replace(`{${"address"}}`, encodeURIComponent(String(address)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication ApiKey required
+            await setApiKeyToObject(localVarHeaderParameter, "X-Api-Key", configuration)
+
+            if (id !== undefined) {
+                localVarQueryParameter['id'] = id;
+            }
+
+            if (xVerify != null) {
+                localVarHeaderParameter['x-verify'] = String(xVerify);
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Get pre-built transaction for strategy order cancellation
+         * @param {string} address 
+         * @param {string} xVerify 
+         * @param {number} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getStrategyOrderCancellationTransaction: async (address: string, xVerify: string, id: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'address' is not null or undefined
+            assertParamExists('getStrategyOrderCancellationTransaction', 'address', address)
+            // verify required parameter 'xVerify' is not null or undefined
+            assertParamExists('getStrategyOrderCancellationTransaction', 'xVerify', xVerify)
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('getStrategyOrderCancellationTransaction', 'id', id)
+            const localVarPath = `/v1/strategies/{address}/order`
+                .replace(`{${"address"}}`, encodeURIComponent(String(address)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication ApiKey required
+            await setApiKeyToObject(localVarHeaderParameter, "X-Api-Key", configuration)
+
+            if (id !== undefined) {
+                localVarQueryParameter['id'] = id;
+            }
+
+            if (xVerify != null) {
+                localVarHeaderParameter['x-verify'] = String(xVerify);
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Get pre-built transaction for strategy order creation
+         * @param {string} address 
+         * @param {string} xVerify 
+         * @param {ApiStrategyOrderCreationRequest} apiStrategyOrderCreationRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getStrategyOrderCreationTransaction: async (address: string, xVerify: string, apiStrategyOrderCreationRequest: ApiStrategyOrderCreationRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'address' is not null or undefined
+            assertParamExists('getStrategyOrderCreationTransaction', 'address', address)
+            // verify required parameter 'xVerify' is not null or undefined
+            assertParamExists('getStrategyOrderCreationTransaction', 'xVerify', xVerify)
+            // verify required parameter 'apiStrategyOrderCreationRequest' is not null or undefined
+            assertParamExists('getStrategyOrderCreationTransaction', 'apiStrategyOrderCreationRequest', apiStrategyOrderCreationRequest)
+            const localVarPath = `/v1/strategies/{address}/order`
+                .replace(`{${"address"}}`, encodeURIComponent(String(address)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication ApiKey required
+            await setApiKeyToObject(localVarHeaderParameter, "X-Api-Key", configuration)
+
+            if (xVerify != null) {
+                localVarHeaderParameter['x-verify'] = String(xVerify);
+            }
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(apiStrategyOrderCreationRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Get strategy orders
+         * @param {string} address 
+         * @param {string} xVerify 
+         * @param {ApiStrategyOrderType} [type] 
+         * @param {boolean} [includeFinished] By default, only active and pending cancellation orders are being returned
+         * @param {number} [size] Maximum amount of results returned
+         * @param {number} [beforeId] Return only those orders, which id is lower than the given one
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getStrategyOrders: async (address: string, xVerify: string, type?: ApiStrategyOrderType, includeFinished?: boolean, size?: number, beforeId?: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'address' is not null or undefined
+            assertParamExists('getStrategyOrders', 'address', address)
+            // verify required parameter 'xVerify' is not null or undefined
+            assertParamExists('getStrategyOrders', 'xVerify', xVerify)
+            const localVarPath = `/v1/strategies/{address}/orders`
+                .replace(`{${"address"}}`, encodeURIComponent(String(address)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication ApiKey required
+            await setApiKeyToObject(localVarHeaderParameter, "X-Api-Key", configuration)
+
+            if (type !== undefined) {
+                localVarQueryParameter['type'] = type;
+            }
+
+            if (includeFinished !== undefined) {
+                localVarQueryParameter['include_finished'] = includeFinished;
+            }
+
+            if (size !== undefined) {
+                localVarQueryParameter['size'] = size;
+            }
+
+            if (beforeId !== undefined) {
+                localVarQueryParameter['before_id'] = beforeId;
+            }
+
+            if (xVerify != null) {
+                localVarHeaderParameter['x-verify'] = String(xVerify);
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Get pre-built transaction for strategies wallet creation.
+         * @param {string} address 
+         * @param {string} xVerify 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getStrategyWalletCreationTransaction: async (address: string, xVerify: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'address' is not null or undefined
+            assertParamExists('getStrategyWalletCreationTransaction', 'address', address)
+            // verify required parameter 'xVerify' is not null or undefined
+            assertParamExists('getStrategyWalletCreationTransaction', 'xVerify', xVerify)
+            const localVarPath = `/v1/strategies/{address}/wallet`
+                .replace(`{${"address"}}`, encodeURIComponent(String(address)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication ApiKey required
+            await setApiKeyToObject(localVarHeaderParameter, "X-Api-Key", configuration)
+
+            if (xVerify != null) {
+                localVarHeaderParameter['x-verify'] = String(xVerify);
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * StrategiesApi - functional programming interface
+ * @export
+ */
+export const StrategiesApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = StrategiesApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @summary Check whether strategies wallet exists for given account address.
+         * @param {string} address 
+         * @param {string} xVerify 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async doesStrategyWalletExist(address: string, xVerify: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.doesStrategyWalletExist(address, xVerify, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['StrategiesApi.doesStrategyWalletExist']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary Get strategy order
+         * @param {string} address 
+         * @param {string} xVerify 
+         * @param {number} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getStrategyOrder(address: string, xVerify: string, id: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ApiStrategyOrder>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getStrategyOrder(address, xVerify, id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['StrategiesApi.getStrategyOrder']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary Get pre-built transaction for strategy order cancellation
+         * @param {string} address 
+         * @param {string} xVerify 
+         * @param {number} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getStrategyOrderCancellationTransaction(address: string, xVerify: string, id: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ApiTransactionBoc>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getStrategyOrderCancellationTransaction(address, xVerify, id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['StrategiesApi.getStrategyOrderCancellationTransaction']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary Get pre-built transaction for strategy order creation
+         * @param {string} address 
+         * @param {string} xVerify 
+         * @param {ApiStrategyOrderCreationRequest} apiStrategyOrderCreationRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getStrategyOrderCreationTransaction(address: string, xVerify: string, apiStrategyOrderCreationRequest: ApiStrategyOrderCreationRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ApiTransactionBoc>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getStrategyOrderCreationTransaction(address, xVerify, apiStrategyOrderCreationRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['StrategiesApi.getStrategyOrderCreationTransaction']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary Get strategy orders
+         * @param {string} address 
+         * @param {string} xVerify 
+         * @param {ApiStrategyOrderType} [type] 
+         * @param {boolean} [includeFinished] By default, only active and pending cancellation orders are being returned
+         * @param {number} [size] Maximum amount of results returned
+         * @param {number} [beforeId] Return only those orders, which id is lower than the given one
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getStrategyOrders(address: string, xVerify: string, type?: ApiStrategyOrderType, includeFinished?: boolean, size?: number, beforeId?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<ApiStrategyOrder>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getStrategyOrders(address, xVerify, type, includeFinished, size, beforeId, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['StrategiesApi.getStrategyOrders']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary Get pre-built transaction for strategies wallet creation.
+         * @param {string} address 
+         * @param {string} xVerify 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getStrategyWalletCreationTransaction(address: string, xVerify: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ApiTransactionBoc>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getStrategyWalletCreationTransaction(address, xVerify, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['StrategiesApi.getStrategyWalletCreationTransaction']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+    }
+};
+
+/**
+ * StrategiesApi - factory interface
+ * @export
+ */
+export const StrategiesApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = StrategiesApiFp(configuration)
+    return {
+        /**
+         * 
+         * @summary Check whether strategies wallet exists for given account address.
+         * @param {string} address 
+         * @param {string} xVerify 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        doesStrategyWalletExist(address: string, xVerify: string, options?: RawAxiosRequestConfig): AxiosPromise<string> {
+            return localVarFp.doesStrategyWalletExist(address, xVerify, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Get strategy order
+         * @param {string} address 
+         * @param {string} xVerify 
+         * @param {number} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getStrategyOrder(address: string, xVerify: string, id: number, options?: RawAxiosRequestConfig): AxiosPromise<ApiStrategyOrder> {
+            return localVarFp.getStrategyOrder(address, xVerify, id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Get pre-built transaction for strategy order cancellation
+         * @param {string} address 
+         * @param {string} xVerify 
+         * @param {number} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getStrategyOrderCancellationTransaction(address: string, xVerify: string, id: number, options?: RawAxiosRequestConfig): AxiosPromise<ApiTransactionBoc> {
+            return localVarFp.getStrategyOrderCancellationTransaction(address, xVerify, id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Get pre-built transaction for strategy order creation
+         * @param {string} address 
+         * @param {string} xVerify 
+         * @param {ApiStrategyOrderCreationRequest} apiStrategyOrderCreationRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getStrategyOrderCreationTransaction(address: string, xVerify: string, apiStrategyOrderCreationRequest: ApiStrategyOrderCreationRequest, options?: RawAxiosRequestConfig): AxiosPromise<ApiTransactionBoc> {
+            return localVarFp.getStrategyOrderCreationTransaction(address, xVerify, apiStrategyOrderCreationRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Get strategy orders
+         * @param {string} address 
+         * @param {string} xVerify 
+         * @param {ApiStrategyOrderType} [type] 
+         * @param {boolean} [includeFinished] By default, only active and pending cancellation orders are being returned
+         * @param {number} [size] Maximum amount of results returned
+         * @param {number} [beforeId] Return only those orders, which id is lower than the given one
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getStrategyOrders(address: string, xVerify: string, type?: ApiStrategyOrderType, includeFinished?: boolean, size?: number, beforeId?: number, options?: RawAxiosRequestConfig): AxiosPromise<Array<ApiStrategyOrder>> {
+            return localVarFp.getStrategyOrders(address, xVerify, type, includeFinished, size, beforeId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Get pre-built transaction for strategies wallet creation.
+         * @param {string} address 
+         * @param {string} xVerify 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getStrategyWalletCreationTransaction(address: string, xVerify: string, options?: RawAxiosRequestConfig): AxiosPromise<ApiTransactionBoc> {
+            return localVarFp.getStrategyWalletCreationTransaction(address, xVerify, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * StrategiesApi - object-oriented interface
+ * @export
+ * @class StrategiesApi
+ * @extends {BaseAPI}
+ */
+export class StrategiesApi extends BaseAPI {
+    /**
+     * 
+     * @summary Check whether strategies wallet exists for given account address.
+     * @param {string} address 
+     * @param {string} xVerify 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof StrategiesApi
+     */
+    public doesStrategyWalletExist(address: string, xVerify: string, options?: RawAxiosRequestConfig) {
+        return StrategiesApiFp(this.configuration).doesStrategyWalletExist(address, xVerify, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Get strategy order
+     * @param {string} address 
+     * @param {string} xVerify 
+     * @param {number} id 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof StrategiesApi
+     */
+    public getStrategyOrder(address: string, xVerify: string, id: number, options?: RawAxiosRequestConfig) {
+        return StrategiesApiFp(this.configuration).getStrategyOrder(address, xVerify, id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Get pre-built transaction for strategy order cancellation
+     * @param {string} address 
+     * @param {string} xVerify 
+     * @param {number} id 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof StrategiesApi
+     */
+    public getStrategyOrderCancellationTransaction(address: string, xVerify: string, id: number, options?: RawAxiosRequestConfig) {
+        return StrategiesApiFp(this.configuration).getStrategyOrderCancellationTransaction(address, xVerify, id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Get pre-built transaction for strategy order creation
+     * @param {string} address 
+     * @param {string} xVerify 
+     * @param {ApiStrategyOrderCreationRequest} apiStrategyOrderCreationRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof StrategiesApi
+     */
+    public getStrategyOrderCreationTransaction(address: string, xVerify: string, apiStrategyOrderCreationRequest: ApiStrategyOrderCreationRequest, options?: RawAxiosRequestConfig) {
+        return StrategiesApiFp(this.configuration).getStrategyOrderCreationTransaction(address, xVerify, apiStrategyOrderCreationRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Get strategy orders
+     * @param {string} address 
+     * @param {string} xVerify 
+     * @param {ApiStrategyOrderType} [type] 
+     * @param {boolean} [includeFinished] By default, only active and pending cancellation orders are being returned
+     * @param {number} [size] Maximum amount of results returned
+     * @param {number} [beforeId] Return only those orders, which id is lower than the given one
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof StrategiesApi
+     */
+    public getStrategyOrders(address: string, xVerify: string, type?: ApiStrategyOrderType, includeFinished?: boolean, size?: number, beforeId?: number, options?: RawAxiosRequestConfig) {
+        return StrategiesApiFp(this.configuration).getStrategyOrders(address, xVerify, type, includeFinished, size, beforeId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Get pre-built transaction for strategies wallet creation.
+     * @param {string} address 
+     * @param {string} xVerify 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof StrategiesApi
+     */
+    public getStrategyWalletCreationTransaction(address: string, xVerify: string, options?: RawAxiosRequestConfig) {
+        return StrategiesApiFp(this.configuration).getStrategyWalletCreationTransaction(address, xVerify, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
@@ -5957,7 +8758,7 @@ export const TonApiFactory = function (configuration?: Configuration, basePath?:
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getWalletBalance(address: string, options?: any): AxiosPromise<string> {
+        getWalletBalance(address: string, options?: RawAxiosRequestConfig): AxiosPromise<string> {
             return localVarFp.getWalletBalance(address, options).then((request) => request(axios, basePath));
         },
         /**
@@ -5967,7 +8768,7 @@ export const TonApiFactory = function (configuration?: Configuration, basePath?:
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getWalletVersion(address: string, options?: any): AxiosPromise<GetWalletVersion200Response> {
+        getWalletVersion(address: string, options?: RawAxiosRequestConfig): AxiosPromise<GetWalletVersion200Response> {
             return localVarFp.getWalletVersion(address, options).then((request) => request(axios, basePath));
         },
     };

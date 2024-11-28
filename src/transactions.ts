@@ -1,4 +1,4 @@
-import { ApiTransactionResult, RoutingApi } from './api';
+import { ApiSplitResult, RoutingApi } from './api';
 
 
 /**
@@ -8,22 +8,22 @@ import { ApiTransactionResult, RoutingApi } from './api';
  * @param api - instance of {@link RoutingApi}
  * @param period - period of time to wait for result (default 1000 ms)
  */
-export async function waitForTransactionResults(routeId: number, api: RoutingApi, period: number = 10_000): Promise<ApiTransactionResult[]> {
-  let result = await api.getTransactionsResult(routeId);
+export async function waitForRouteResults(routeId: number, api: RoutingApi, period: number = 10_000): Promise<ApiSplitResult[]> {
+  let result = await api.getRouteResult(routeId);
 
   return new Promise(async (resolve, reject) => {
 
-    while (!allTransactionsCompleted(result.data)) {
+    while (!allSplitsCompleted(result.data.splits)) {
       await new Promise(resolve => setTimeout(resolve, period));
-      result = await api.getTransactionsResult(routeId);
+      result = await api.getRouteResult(routeId);
     }
 
-    resolve(result.data);
+    resolve(result.data.splits);
   });
 }
 
 
-function allTransactionsCompleted(transactions: ApiTransactionResult[]): boolean {
+function allSplitsCompleted(transactions: ApiSplitResult[]): boolean {
   return transactions.every(transaction => transaction.status != 'pending' && transaction.status != 'partially_complete');
 }
 

@@ -1,6 +1,6 @@
 import { FSStorage, TonConnectStorage } from './storage';
 import TonConnect, { WalletInfo, WalletInfoRemote } from '@tonconnect/sdk';
-import { ApiTokenAddress, RoutingApi, waitForTransactionResults } from '../src';
+import { ApiTokenAddress, RoutingApi, waitForRouteResults } from '../src';
 
 function isRemote(walletInfo: WalletInfo): walletInfo is WalletInfoRemote {
   return 'universalLink' in walletInfo && 'bridgeUrl' in walletInfo;
@@ -81,7 +81,7 @@ export async function swapAssets() {
     messages: messages,
   });
 
-  const results = await waitForTransactionResults(transactions.data.route_id, routingApi);
+  const results = await waitForRouteResults(transactions.data.route_id, routingApi);
 
   console.log(results); // array of transaction results
 }
