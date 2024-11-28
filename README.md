@@ -24,6 +24,8 @@ Documentation can be found [here](https://docs.swap.coffee).
 Swapping assets using our SDK and [TonConnect SDK](https://www.npmjs.com/package/@tonconnect/sdk)
 
 ```typescript
+import { waitForRouteResults } from './transactions';
+
 const connector = await setupTonConnect();
 const routingApi = new RoutingApi();
 
@@ -66,7 +68,7 @@ await connector.sendTransaction({
   messages: messages,
 });
 
-const results = await waitForTransactionResults(transactions.data.route_id, routingApi);
+const results = await waitForRouteResults(transactions.data.route_id, routingApi);
 ```
 And here is our transaction:
 
